@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect | Crop Cultivation Blueprint</title>
+  <meta name="description" content="Scientific agronomy manual, soil chemistry, climate thresholds, and linked market prices for this crop.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh">
+
+  <!-- ================= Navigation ================= -->
+  <nav class="navbar navbar-expand-lg navbar-agri">
+    <div class="container">
+      <a class="brand-logo" href="dashboard.html">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <span>AgriConnect</span>
+      </a>
+
+      <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDetails">
+        <i class="fa-solid fa-bars fs-4 text-emerald"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarDetails">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="dashboard.html">
+              <i class="fa-solid fa-gauge-high me-1 text-emerald"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri active" href="crops.html">
+              <i class="fa-solid fa-wheat-awn me-1 text-emerald"></i> Crops
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="market.html">
+              <i class="fa-solid fa-chart-line me-1 text-emerald"></i> Market
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="weather.html">
+              <i class="fa-solid fa-cloud-sun-rain me-1 text-emerald"></i> Weather
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <a href="crops.html" class="btn btn-glass btn-sm px-3">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Crops
+          </a>
+          <button class="btn btn-glass btn-sm px-3" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= Crop Header Hero ================= -->
+  <section class="py-5 position-relative" style="background: linear-gradient(180deg, rgba(6, 78, 59, 0.45) 0%, rgba(15, 23, 42, 0) 100%);">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="crops.html">Crops Library</a></li>
+          <li class="breadcrumb-item active text-emerald" id="breadcrumbCropName" aria-current="page">Crop Blueprint</li>
+        </ol>
+      </nav>
+
+      <div class="row align-items-center justify-content-between g-4">
+        <div class="col-lg-8">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge badge-emerald" id="cropCategoryBadge">Food Crops</span>
+            <span class="badge badge-gold" id="cropSeasonBadge">Kharif Season</span>
+            <span class="badge badge-slate" id="cropSourceBadge">ICAR Verified</span>
+          </div>
+
+          <h1 class="display-4 fw-bolder text-white mb-2" id="cropNameHeader">
+            Loading Crop Details...
+          </h1>
+
+          <p class="lead text-muted mb-0" id="cropShortDesc" style="max-width: 720px;">
+            Retrieving scientific agronomy specifications, soil preparation directives, and linked APMC market pricing.
+          </p>
+        </div>
+
+        <div class="col-lg-4 text-lg-end d-flex flex-wrap gap-2 justify-content-lg-end">
+          <button class="btn btn-outline-emerald" id="favToggleBtn">
+            <i class="fa-regular fa-heart me-1 text-danger"></i> Save to Favorites
+          </button>
+          <a href="market.html" class="btn btn-emerald" id="checkMarketPricesBtn">
+            <i class="fa-solid fa-chart-line"></i> Check Live Mandi
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Main Details Body ================= -->
+  <section class="pb-5 mb-5">
+    <div class="container">
+      
+      <!-- 4 Parameter Grid -->
+      <div class="row g-3 mb-4">
+        <!-- Parameter 1: Season -->
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">
+              <i class="fa-regular fa-calendar text-emerald me-1"></i> Growing Season
+            </div>
+            <div class="fs-5 fw-bold text-white" id="infoSeason">--</div>
+            <small class="text-muted" id="infoSeasonSub">Primary cycle</small>
+          </div>
+        </div>
+
+        <!-- Parameter 2: Soil Type -->
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">
+              <i class="fa-solid fa-mound text-warning me-1"></i> Ideal Soil Type
+            </div>
+            <div class="fs-5 fw-bold text-white text-truncate" id="infoSoil">--</div>
+            <small class="text-muted" id="infoSoilSub">Optimal texture</small>
+          </div>
+        </div>
+
+        <!-- Parameter 3: Water Requirement -->
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">
+              <i class="fa-solid fa-water text-sky me-1"></i> Water Requirement
+            </div>
+            <div class="fs-5 fw-bold text-white" id="infoWater">--</div>
+            <small class="text-muted" id="infoWaterSub">Annual rainfall</small>
+          </div>
+        </div>
+
+        <!-- Parameter 4: Temperature -->
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-3 h-100">
+            <div class="text-muted small text-uppercase fw-semibold mb-1">
+              <i class="fa-solid fa-temperature-three-quarters text-danger me-1"></i> Temperature Range
+            </div>
+            <div class="fs-5 fw-bold text-white" id="infoTemp">--</div>
+            <small class="text-muted" id="infoTempSub">Climatic window</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-Column Agronomy Details -->
+      <div class="row g-4 mb-4">
+        
+        <!-- Left: Full Scientific Description & Guidance -->
+        <div class="col-lg-8">
+          
+          <!-- Full Description Card -->
+          <div class="glass-card p-4 mb-4">
+            <h4 class="text-white fw-bold mb-3">
+              <i class="fa-solid fa-book-open-reader text-emerald me-2"></i> Agronomic Overview
+            </h4>
+            <div class="text-light" id="cropFullDescription" style="line-height: 1.8;">
+              <p>Loading comprehensive botanical and cultivation details...</p>
+            </div>
+          </div>
+
+          <!-- Cultivation Guidance Stages -->
+          <div class="glass-card p-4">
+            <h4 class="text-white fw-bold mb-4">
+              <i class="fa-solid fa-list-check text-emerald me-2"></i> Standard Operating Procedure (SOP)
+            </h4>
+
+            <div class="d-flex flex-column gap-4" id="guidanceSteps">
+              
+              <!-- Stage 1 -->
+              <div class="d-flex gap-3">
+                <div class="rounded-circle bg-emerald text-dark fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; min-width: 36px;">
+                  1
+                </div>
+                <div>
+                  <h6 class="text-white fw-bold mb-1">Field & Soil Preparation</h6>
+                  <p class="text-muted small mb-0" id="guideSoilPrep">
+                    Perform deep summer ploughing (25-30 cm) followed by two cross-harrowings to break clods. Incorporate 10-15 tonnes of well-rotted Farm Yard Manure (FYM) per hectare before the final harrowing to enrich organic carbon.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Stage 2 -->
+              <div class="d-flex gap-3">
+                <div class="rounded-circle bg-emerald text-dark fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; min-width: 36px;">
+                  2
+                </div>
+                <div>
+                  <h6 class="text-white fw-bold mb-1">Seed Treatment & Sowing Window</h6>
+                  <p class="text-muted small mb-0" id="guideSowing">
+                    Treat certified seeds with Trichoderma viride @ 4g/kg seed or Carbendazim @ 2g/kg seed to prevent seed-borne fungal infections. Maintain optimal row-to-row spacing of 20-25cm and plant-to-plant spacing of 10-15cm.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Stage 3 -->
+              <div class="d-flex gap-3">
+                <div class="rounded-circle bg-emerald text-dark fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; min-width: 36px;">
+                  3
+                </div>
+                <div>
+                  <h6 class="text-white fw-bold mb-1">Nutrient & Irrigation Schedule</h6>
+                  <p class="text-muted small mb-0" id="guideIrrigation">
+                    Apply N:P:K as per soil test recommendations. Deliver 50% nitrogen along with 100% phosphorus and potash as basal dose. Apply remaining nitrogen in two equal splits at active vegetative and panicle/flowering initiation.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Stage 4 -->
+              <div class="d-flex gap-3">
+                <div class="rounded-circle bg-emerald text-dark fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; min-width: 36px;">
+                  4
+                </div>
+                <div>
+                  <h6 class="text-white fw-bold mb-1">Integrated Pest & Disease Management</h6>
+                  <p class="text-muted small mb-0" id="guidePest">
+                    Regularly inspect for stem borer, leaf blast, and sucking pests. Install pheromone traps @ 5 per acre. In case of severe infestation, spray recommended bio-pesticides (Neem oil 1500 ppm @ 3ml/L) or targeted university-approved actives.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Stage 5 -->
+              <div class="d-flex gap-3">
+                <div class="rounded-circle bg-emerald text-dark fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; min-width: 36px;">
+                  5
+                </div>
+                <div>
+                  <h6 class="text-white fw-bold mb-1">Harvesting & Post-Harvest Storage</h6>
+                  <p class="text-muted small mb-0" id="guideHarvest">
+                    Harvest when 80-85% of ears/pods turn golden straw-colored and grain moisture drops to ~18-20%. Sun-dry harvested grains to 12% moisture prior to storage in hermetic bags to prevent weevil damage.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Linked Live Market Prices & Quick Stats -->
+        <div class="col-lg-4">
+          
+          <!-- Related Market Prices Card -->
+          <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <h5 class="text-white fw-bold mb-0">
+                <i class="fa-solid fa-chart-line text-emerald me-2"></i> Mandi Rates
+              </h5>
+              <a href="market.html" class="btn btn-sm btn-outline-emerald">More &rarr;</a>
+            </div>
+            <p class="text-muted small">Recent transaction prices from APMC markets for this commodity.</p>
+
+            <div class="d-flex flex-column gap-3 mt-3" id="relatedMarketsList">
+              <div class="text-center py-4 text-muted">
+                <i class="fa-solid fa-spinner fa-spin fs-4 mb-2"></i>
+                <div>Loading mandi prices...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Agro Advisories -->
+          <div class="glass-card p-4">
+            <h5 class="text-white fw-bold mb-3">
+              <i class="fa-solid fa-shield-cat text-warning me-2"></i> Extension Tip
+            </h5>
+            <div class="glass-panel p-3 mb-3 border-start border-3 border-emerald">
+              <div class="fw-semibold text-white small mb-1">Crop Rotation Advisory</div>
+              <p class="text-muted small mb-0">
+                Rotate this crop with leguminous pulses (such as Gram or Moong) to regenerate depleted soil nitrogen and break monoculture nematode cycles.
+              </p>
+            </div>
+            <a href="weather.html" class="btn btn-glass btn-sm w-100">
+              <i class="fa-solid fa-cloud-sun-rain text-sky me-1"></i> Check Weather for Sowing
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Back Action -->
+      <div class="text-start mt-4">
+        <a href="crops.html" class="btn btn-glass px-4">
+          <i class="fa-solid fa-arrow-left me-2"></i> Back to Crops Library
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth JS -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      requireAuth();
+
+      // Read ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const cropId = parseInt(urlParams.get('id'), 10) || 1;
+
+      loadCropDetails(cropId);
+    });
+
+    // Fallback comprehensive catalog in case backend endpoint is not yet seeded
+    const BACKUP_CROPS = {
+      1: {
+        id: 1,
+        name: 'Rice (Paddy)',
+        category: 'Food Crops',
+        season: 'Kharif',
+        soilType: 'Deep alluvial or clayey loam with poor drainage',
+        waterRequirement: 'High (1200-1400 mm)',
+        temperature: '22°C - 32°C',
+        description: 'Rice is India\'s most important cereal crop, feeding over 60% of the national population. Cultivated primarily in the Kharif season across the Indo-Gangetic plains, coastal deltas, and river basins, paddy demands high ambient humidity, abundant sunshine during grain filling, and standing water during the tillering stage.'
+      },
+      2: {
+        id: 2,
+        name: 'Wheat',
+        category: 'Food Crops',
+        season: 'Rabi',
+        soilType: 'Well-drained fertile clayey loam to loam',
+        waterRequirement: 'Moderate (450-650 mm)',
+        temperature: '14°C - 24°C',
+        description: 'Wheat constitutes the backbone of food security in Northern and Central India. Sown from late October to December and harvested between March and May, it demands cool vegetative days with radiant sunshine during harvest.'
+      },
+      3: {
+        id: 3,
+        name: 'Cotton',
+        category: 'Commercial',
+        season: 'Kharif',
+        soilType: 'Deep black soil (Regur)',
+        waterRequirement: 'Moderate (500-750 mm)',
+        temperature: '21°C - 30°C',
+        description: 'Known as "White Gold", cotton is India\'s leading industrial fiber crop. Cultivated across Maharashtra, Gujarat, Andhra Pradesh, and Punjab, it requires frost-free periods and dry harvesting weather.'
+      },
+      4: {
+        id: 4,
+        name: 'Sugarcane',
+        category: 'Commercial',
+        season: 'Annual / Perennial',
+        soilType: 'Deep rich loam with ample organic humus',
+        waterRequirement: 'High (1500-2500 mm)',
+        temperature: '20°C - 35°C',
+        description: 'Major raw commodity feeding India\'s sugar and ethanol blending initiatives. Cultivated across Uttar Pradesh, Maharashtra, and Karnataka.'
+      },
+      5: {
+        id: 5,
+        name: 'Maize (Corn)',
+        category: 'Food Crops',
+        season: 'Kharif / Rabi',
+        soilType: 'Deep fertile loam or red sandy loam',
+        waterRequirement: 'Moderate (500-700 mm)',
+        temperature: '18°C - 27°C',
+        description: 'Termed the "Queen of Cereals", maize has the highest yield potential among cereals and is critical for poultry feed and starch processing.'
+      },
+      6: {
+        id: 6,
+        name: 'Soybean',
+        category: 'Oilseeds',
+        season: 'Kharif',
+        soilType: 'Well-drained sandy loam to clay',
+        waterRequirement: 'Moderate (600-800 mm)',
+        temperature: '20°C - 30°C',
+        description: 'A miracle dual-purpose legume rich in high-quality vegetable protein (40%) and edible oil (20%), enriching soil naturally.'
+      },
+      7: {
+        id: 7,
+        name: 'Mustard (Rapeseed)',
+        category: 'Oilseeds',
+        season: 'Rabi',
+        soilType: 'Sandy loam to loamy soil',
+        waterRequirement: 'Low (250-400 mm)',
+        temperature: '15°C - 25°C',
+        description: 'Premier rabi oilseed crop cultivated across Rajasthan, Haryana, and Uttar Pradesh with high oil content (38-42%).'
+      },
+      8: {
+        id: 8,
+        name: 'Groundnut (Peanut)',
+        category: 'Oilseeds',
+        season: 'Kharif / Summer',
+        soilType: 'Light sandy loam with loose texture',
+        waterRequirement: 'Moderate (500-600 mm)',
+        temperature: '25°C - 30°C',
+        description: 'Premier food oilseed requiring friable soil for gynophores (pegs) to penetrate easily underground for pod maturation.'
+      },
+      9: {
+        id: 9,
+        name: 'Gram (Chickpea)',
+        category: 'Pulses',
+        season: 'Rabi',
+        soilType: 'Sandy loam to clay loam',
+        waterRequirement: 'Low (250-350 mm)',
+        temperature: '18°C - 26°C',
+        description: 'Premier pulse crop of India contributing over 45% to total pulse production with excellent drought hardiness.'
+      }
+    };
+
+    async function loadCropDetails(id) {
+      let crop = null;
+
+      try {
+        const response = await authFetch(`${API_BASE_URL}/api/crops/${id}`);
+        if (response.ok) {
+          crop = await response.json();
+        }
+      } catch (err) {
+        console.warn('Backend crop details offline, fallback to agronomy dictionary:', err);
+      }
+
+      if (!crop) {
+        crop = BACKUP_CROPS[id] || BACKUP_CROPS[1];
+      }
+
+      renderCropData(crop);
+      loadRelatedMarketPrices(crop.name);
+      setupFavoritesButton(crop.id);
+    }
+
+    function renderCropData(crop) {
+      document.title = `AgriConnect | ${crop.name} Cultivation Blueprint`;
+      document.getElementById('breadcrumbCropName').innerText = crop.name;
+      document.getElementById('cropNameHeader').innerText = crop.name;
+      document.getElementById('cropCategoryBadge').innerText = crop.category || 'Agricultural Crop';
+      document.getElementById('cropSeasonBadge').innerText = crop.season || 'Annual';
+      
+      const shortDesc = crop.description ? (crop.description.split('.')[0] + '.') : 'Scientific agronomic blueprint.';
+      document.getElementById('cropShortDesc').innerText = shortDesc;
+
+      document.getElementById('infoSeason').innerText = crop.season || 'Kharif';
+      document.getElementById('infoSoil').innerText = crop.soilType || 'Loamy Soil';
+      document.getElementById('infoSoil').title = crop.soilType || '';
+      document.getElementById('infoWater').innerText = crop.waterRequirement || 'Moderate';
+      document.getElementById('infoTemp').innerText = crop.temperature || '20°C - 30°C';
+
+      document.getElementById('cropFullDescription').innerHTML = `
+        <p class="mb-3">${crop.description}</p>
+        <p class="text-white-50">
+          Optimal yield requires strict adherence to seasonal sowing schedules, balanced soil organic conditioning, and timely pesticide interventions against key agricultural pests.
+        </p>
+      `;
+
+      // Update market CTA button link
+      const cleanName = crop.name.split(' ')[0];
+      document.getElementById('checkMarketPricesBtn').href = `market.html?search=${encodeURIComponent(cleanName)}`;
+    }
+
+    async function loadRelatedMarketPrices(cropName) {
+      const container = document.getElementById('relatedMarketsList');
+      const cleanCrop = cropName.split(' ')[0].replace(/[\(\)]/g, '');
+
+      try {
+        const response = await authFetch(`${API_BASE_URL}/api/market-prices/search?crop=${encodeURIComponent(cleanCrop)}`);
+        if (response.ok) {
+          const prices = await response.json();
+          if (Array.isArray(prices) && prices.length > 0) {
+            renderRelatedPrices(prices.slice(0, 3));
+            return;
+          }
+        }
+      } catch (e) {
+        console.log('Using sample market rates for crop view');
+      }
+
+      // Sample related mandi prices
+      const samplePrices = [
+        {
+          marketName: 'Anakapalle APMC',
+          district: 'Visakhapatnam',
+          state: 'Andhra Pradesh',
+          modalPrice: 2183,
+          minPrice: 2050,
+          maxPrice: 2320
+        },
+        {
+          marketName: 'Guntur Main Mandi',
+          district: 'Guntur',
+          state: 'Andhra Pradesh',
+          modalPrice: 2240,
+          minPrice: 2100,
+          maxPrice: 2390
+        },
+        {
+          marketName: 'Nandyal Market Yard',
+          district: 'Kurnool',
+          state: 'Andhra Pradesh',
+          modalPrice: 2150,
+          minPrice: 2000,
+          maxPrice: 2280
+        }
+      ];
+
+      renderRelatedPrices(samplePrices);
+    }
+
+    function renderRelatedPrices(prices) {
+      const container = document.getElementById('relatedMarketsList');
+      container.innerHTML = prices.map(p => `
+        <div class="glass-panel p-3 border border-emerald border-opacity-15">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-white fw-semibold small">${p.marketName || 'APMC Mandi'}</span>
+            <span class="badge badge-emerald">₹${p.modalPrice || p.price || '--'}/q</span>
+          </div>
+          <div class="d-flex justify-content-between text-muted small" style="font-size: 0.78rem;">
+            <span><i class="fa-solid fa-location-dot me-1 text-emerald"></i> ${p.district || ''}, ${p.state || ''}</span>
+            <span>Range: ₹${p.minPrice || '--'} - ₹${p.maxPrice || '--'}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setupFavoritesButton(cropId) {
+      const favBtn = document.getElementById('favToggleBtn');
+      let favs = JSON.parse(localStorage.getItem('agriconnect_favorites') || '[]');
+      
+      const updateFavUI = () => {
+        const isFav = favs.includes(cropId);
+        if (isFav) {
+          favBtn.innerHTML = `<i class="fa-solid fa-heart me-1 text-danger"></i> Saved to Favorites`;
+          favBtn.className = 'btn btn-emerald';
+        } else {
+          favBtn.innerHTML = `<i class="fa-regular fa-heart me-1 text-danger"></i> Save to Favorites`;
+          favBtn.className = 'btn btn-outline-emerald';
+        }
+      };
+
+      updateFavUI();
+
+      favBtn.addEventListener('click', async () => {
+        const idx = favs.indexOf(cropId);
+        const isFav = idx !== -1;
+
+        try {
+          await authFetch(`${API_BASE_URL}/api/farmers/favorites`, {
+            method: isFav ? 'DELETE' : 'POST',
+            body: JSON.stringify({ cropId })
+          });
+        } catch (e) {
+          // resilient local sync
+        }
+
+        if (isFav) {
+          favs.splice(idx, 1);
+          showNotification('Removed crop from favorites.', 'info');
+        } else {
+          favs.push(cropId);
+          showNotification('Saved to your farm favorites!', 'success');
+        }
+
+        localStorage.setItem('agriconnect_favorites', JSON.stringify(favs));
+        updateFavUI();
+      });
+    }
+  </script>
+</body>
+</html>

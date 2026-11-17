@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect | Administrative Management Console</title>
+  <meta name="description" content="Centralized administration console for managing crops, APMC mandi commodity records, kisan announcements, and registered farmer profiles.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh">
+
+  <!-- ================= Navigation ================= -->
+  <nav class="navbar navbar-expand-lg navbar-agri">
+    <div class="container">
+      <a class="brand-logo" href="admin.html">
+        <div class="brand-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <span>AgriConnect <span class="badge badge-gold fs-6 ms-2">ADMIN</span></span>
+      </a>
+
+      <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin">
+        <i class="fa-solid fa-bars fs-4 text-emerald"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarAdmin">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="dashboard.html">
+              <i class="fa-solid fa-gauge-high me-1 text-emerald"></i> Farmer View
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri active" href="admin.html">
+              <i class="fa-solid fa-sliders me-1 text-warning"></i> Admin Panel
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-white-50 small d-none d-md-inline" id="adminUserGreeting">
+            <i class="fa-solid fa-user-shield text-warning me-1"></i> Administrator
+          </span>
+          <button class="btn btn-glass btn-sm px-3" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= Hero Header ================= -->
+  <section class="py-4 position-relative" style="background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0) 100%);">
+    <div class="container">
+      <div class="row align-items-center justify-content-between g-3">
+        <div class="col-lg-8">
+          <h1 class="display-6 fw-bold text-white mb-1">Platform Administrative Console</h1>
+          <p class="text-muted small mb-0">
+            Maintain the agricultural database: crop playbooks, mandi transactions, official bulletins, and registered kisan users.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <span class="badge badge-emerald px-3 py-2">
+            <i class="fa-solid fa-lock text-emerald me-1"></i> Role: Administrator (Full Access)
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Management Tabs ================= -->
+  <section class="py-3 mb-5">
+    <div class="container">
+      
+      <!-- Nav Tabs -->
+      <ul class="nav nav-tabs nav-tabs-agri mb-4" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="crops-tab" data-bs-toggle="tab" data-bs-target="#tab-crops" type="button" role="tab">
+            <i class="fa-solid fa-wheat-awn me-2 text-emerald"></i> (a) Manage Crops
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="market-tab" data-bs-toggle="tab" data-bs-target="#tab-market" type="button" role="tab">
+            <i class="fa-solid fa-chart-line me-2 text-warning"></i> (b) Market Prices
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="announcements-tab" data-bs-toggle="tab" data-bs-target="#tab-announcements" type="button" role="tab">
+            <i class="fa-solid fa-bullhorn me-2 text-info"></i> (c) Announcements
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="farmers-tab" data-bs-toggle="tab" data-bs-target="#tab-farmers" type="button" role="tab">
+            <i class="fa-solid fa-users-gear me-2 text-purple"></i> (d) Farmer Management
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content Area -->
+      <div class="tab-content" id="adminTabContent">
+        
+        <!-- ================= TAB 1: CROPS ================= -->
+        <div class="tab-pane fade show active" id="tab-crops" role="tabpanel">
+          <div class="glass-card p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+              <div>
+                <h5 class="text-white fw-bold mb-1">Crop Blueprints Repository</h5>
+                <small class="text-muted">Manage agronomy specifications, soil profiles, and water bounds</small>
+              </div>
+              <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#cropModal" onclick="prepareAddCrop()">
+                <i class="fa-solid fa-plus"></i> Add New Crop
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table-agri">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Crop Name</th>
+                    <th>Category</th>
+                    <th>Season</th>
+                    <th>Soil Type</th>
+                    <th>Water Req</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminCropsTableBody">
+                  <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fa-solid fa-spinner fa-spin me-2"></i> Loading crops database...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TAB 2: MARKET PRICES ================= -->
+        <div class="tab-pane fade" id="tab-market" role="tabpanel">
+          <div class="glass-card p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+              <div>
+                <h5 class="text-white fw-bold mb-1">APMC Mandi Commodity Prices</h5>
+                <small class="text-muted">Record verified daily commodity rates per quintal</small>
+              </div>
+              <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#marketModal" onclick="prepareAddMarket()">
+                <i class="fa-solid fa-plus"></i> Add Market Price
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table-agri">
+                <thead>
+                  <tr>
+                    <th>Crop</th>
+                    <th>Market Name</th>
+                    <th>District</th>
+                    <th>State</th>
+                    <th class="text-end">Min (₹)</th>
+                    <th class="text-end">Max (₹)</th>
+                    <th class="text-end">Modal (₹)</th>
+                    <th>Source</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminMarketTableBody">
+                  <tr>
+                    <td colspan="9" class="text-center py-4 text-muted">
+                      <i class="fa-solid fa-spinner fa-spin me-2"></i> Loading market transactions...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TAB 3: ANNOUNCEMENTS ================= -->
+        <div class="tab-pane fade" id="tab-announcements" role="tabpanel">
+          <div class="glass-card p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+              <div>
+                <h5 class="text-white fw-bold mb-1">Agricultural Bulletins & Advisories</h5>
+                <small class="text-muted">Broadcast official MSP, subsidies, and extension schemes to farmers</small>
+              </div>
+              <button class="btn btn-emerald btn-sm" data-bs-toggle="modal" data-bs-target="#announcementModal">
+                <i class="fa-solid fa-plus"></i> Publish Announcement
+              </button>
+            </div>
+
+            <div class="d-flex flex-column gap-3" id="adminAnnouncementsList">
+              <div class="text-center py-4 text-muted">
+                <i class="fa-solid fa-spinner fa-spin me-2"></i> Loading announcements...
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TAB 4: FARMER MANAGEMENT ================= -->
+        <div class="tab-pane fade" id="tab-farmers" role="tabpanel">
+          <div class="glass-card p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
+              <div>
+                <h5 class="text-white fw-bold mb-1">Registered Kisan Users</h5>
+                <small class="text-muted">Active cultivators registered across Indian districts</small>
+              </div>
+              <span class="badge badge-emerald" id="farmersCountBadge">Loading users...</span>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table-agri">
+                <thead>
+                  <tr>
+                    <th>Farmer Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>State</th>
+                    <th>District</th>
+                    <th>Farm Size</th>
+                    <th>Primary Crop</th>
+                  </tr>
+                </thead>
+                <tbody id="adminFarmersTableBody">
+                  <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                      <i class="fa-solid fa-spinner fa-spin me-2"></i> Fetching registered cultivators...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= MODAL: ADD / EDIT CROP ================= -->
+  <div class="modal fade" id="cropModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="cropForm">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold text-white" id="cropModalTitle">
+              <i class="fa-solid fa-wheat-awn text-emerald me-2"></i> Add Agricultural Crop Blueprint
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="cropIdField">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Crop Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="cropNameField" required placeholder="e.g. Basmati Rice">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Category <span class="text-danger">*</span></label>
+                <select class="form-select" id="cropCategoryField" required>
+                  <option value="Food Crops">Food Crops</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Pulses">Pulses</option>
+                  <option value="Oilseeds">Oilseeds</option>
+                  <option value="Horticultural">Horticultural</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Growing Season</label>
+                <input type="text" class="form-control" id="cropSeasonField" placeholder="e.g. Kharif (June - Nov)">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Ideal Soil Type</label>
+                <input type="text" class="form-control" id="cropSoilField" placeholder="e.g. Clayey Alluvial Loam">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Water Requirement</label>
+                <input type="text" class="form-control" id="cropWaterField" placeholder="e.g. High (1200-1400mm)">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Temperature Range</label>
+                <input type="text" class="form-control" id="cropTempField" placeholder="e.g. 22°C - 32°C">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Scientific Agronomy Description</label>
+                <textarea class="form-control" id="cropDescField" rows="3" placeholder="Field preparation, optimal sowing windows, pest advisories..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-emerald" id="saveCropBtn">
+              <i class="fa-solid fa-floppy-disk"></i> Save Crop
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD / EDIT MARKET PRICE ================= -->
+  <div class="modal fade" id="marketModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="marketForm">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold text-white" id="marketModalTitle">
+              <i class="fa-solid fa-chart-line text-emerald me-2"></i> Record APMC Mandi Rate
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="marketIdField">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Crop Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="mCropField" required placeholder="e.g. Rice">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Market Yard Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="mMarketField" required placeholder="e.g. Anakapalle APMC">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">District <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="mDistrictField" required placeholder="e.g. Visakhapatnam">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">State <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="mStateField" required placeholder="e.g. Andhra Pradesh">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Min Price (₹/q) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="mMinPriceField" required placeholder="2000">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Max Price (₹/q) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="mMaxPriceField" required placeholder="2400">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Modal Price (₹/q) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="mModalPriceField" required placeholder="2180">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Date</label>
+                <input type="text" class="form-control" id="mDateField" placeholder="15-Nov-2026">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Source Feed</label>
+                <input type="text" class="form-control" id="mSourceField" placeholder="AGMARKNET / e-NAM" value="AGMARKNET">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-emerald" id="saveMarketBtn">
+              <i class="fa-solid fa-floppy-disk"></i> Save Rate
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD ANNOUNCEMENT ================= -->
+  <div class="modal fade" id="announcementModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="announcementForm">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold text-white">
+              <i class="fa-solid fa-bullhorn text-info me-2"></i> Broadcast Kisan Announcement
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="annTitleField" required placeholder="e.g. Subsidized Drip Irrigation">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Category</label>
+              <input type="text" class="form-control" id="annCategoryField" placeholder="Subsidy / MSP / Weather Alert" value="Official Notice">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Bulletin Content <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="annContentField" rows="4" required placeholder="Details of the agricultural scheme..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-emerald" id="saveAnnounceBtn">
+              <i class="fa-solid fa-paper-plane"></i> Publish Now
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth JS -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- Admin Controller Logic -->
+  <script>
+    let adminCrops = [];
+    let adminMarkets = [];
+    let adminAnnouncements = [];
+    let adminFarmers = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Admin Role Guard
+      requireAdmin();
+
+      const user = getUserFromToken();
+      const adminGreeting = document.getElementById('adminUserGreeting');
+      if (adminGreeting && user) {
+        adminGreeting.innerHTML = `<i class="fa-solid fa-user-shield text-warning me-1"></i> ${user.name || 'Admin'}`;
+      }
+
+      // Initial Loads
+      loadAdminCrops();
+      loadAdminMarkets();
+      loadAdminAnnouncements();
+      loadAdminFarmers();
+
+      setupAdminFormSubmissions();
+    });
+
+    /* ==========================================================================
+       TAB A: CROPS MANAGEMENT
+       ========================================================================== */
+    async function loadAdminCrops() {
+      const tbody = document.getElementById('adminCropsTableBody');
+      try {
+        const res = await authFetch(`${API_BASE_URL}/api/crops`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            adminCrops = data;
+            renderAdminCropsTable();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Backend crops API offline, using admin cache:', err);
+      }
+
+      // Admin fallback cache
+      adminCrops = [
+        { id: 1, name: 'Rice (Paddy)', category: 'Food Crops', season: 'Kharif', soilType: 'Clayey Loam', waterRequirement: 'High', temperature: '22°C - 32°C', description: 'Staple cereal.' },
+        { id: 2, name: 'Wheat', category: 'Food Crops', season: 'Rabi', soilType: 'Clayey Loam', waterRequirement: 'Moderate', temperature: '14°C - 24°C', description: 'Winter cereal.' },
+        { id: 3, name: 'Cotton', category: 'Commercial', season: 'Kharif', soilType: 'Black Soil', waterRequirement: 'Moderate', temperature: '21°C - 30°C', description: 'White gold cash crop.' },
+        { id: 4, name: 'Gram (Chickpea)', category: 'Pulses', season: 'Rabi', soilType: 'Sandy Loam', waterRequirement: 'Low', temperature: '18°C - 26°C', description: 'Protein pulse.' }
+      ];
+      renderAdminCropsTable();
+    }
+
+    function renderAdminCropsTable() {
+      const tbody = document.getElementById('adminCropsTableBody');
+      if (adminCrops.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No crops in database.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = adminCrops.map(c => `
+        <tr>
+          <td><span class="badge badge-slate">#${c.id}</span></td>
+          <td class="fw-bold text-white">${c.name}</td>
+          <td><span class="badge badge-emerald">${c.category}</span></td>
+          <td>${c.season || '--'}</td>
+          <td>${c.soilType || '--'}</td>
+          <td>${c.waterRequirement || '--'}</td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-glass me-1" onclick="editCrop(${c.id})" title="Edit crop">
+              <i class="fa-solid fa-pen-to-square text-sky"></i>
+            </button>
+            <button class="btn btn-sm btn-danger-glass" onclick="deleteCrop(${c.id})" title="Delete crop">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.prepareAddCrop = function() {
+      document.getElementById('cropModalTitle').innerHTML = `<i class="fa-solid fa-wheat-awn text-emerald me-2"></i> Add Agricultural Crop Blueprint`;
+      document.getElementById('cropForm').reset();
+      document.getElementById('cropIdField').value = '';
+    };
+
+    window.editCrop = function(id) {
+      const crop = adminCrops.find(c => c.id === id);
+      if (!crop) return;
+
+      document.getElementById('cropModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald me-2"></i> Edit Crop: ${crop.name}`;
+      document.getElementById('cropIdField').value = crop.id;
+      document.getElementById('cropNameField').value = crop.name;
+      document.getElementById('cropCategoryField').value = crop.category;
+      document.getElementById('cropSeasonField').value = crop.season || '';
+      document.getElementById('cropSoilField').value = crop.soilType || '';
+      document.getElementById('cropWaterField').value = crop.waterRequirement || '';
+      document.getElementById('cropTempField').value = crop.temperature || '';
+      document.getElementById('cropDescField').value = crop.description || '';
+
+      const modal = new bootstrap.Modal(document.getElementById('cropModal'));
+      modal.show();
+    };
+
+    window.deleteCrop = async function(id) {
+      if (!confirm('Are you sure you want to permanently delete this crop blueprint?')) return;
+
+      try {
+        await authFetch(`${API_BASE_URL}/api/crops/${id}`, { method: 'DELETE' });
+        showNotification('Crop deleted from database.', 'info');
+      } catch (e) {
+        showNotification('Offline simulated: Crop removed.', 'info');
+      }
+
+      adminCrops = adminCrops.filter(c => c.id !== id);
+      renderAdminCropsTable();
+    };
+
+    /* ==========================================================================
+       TAB B: MARKET PRICES MANAGEMENT
+       ========================================================================== */
+    async function loadAdminMarkets() {
+      try {
+        const res = await authFetch(`${API_BASE_URL}/api/market-prices`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            adminMarkets = data;
+            renderAdminMarketTable();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Market prices admin fetch fallback:', err);
+      }
+
+      adminMarkets = [
+        { id: 1, crop: 'Rice', marketName: 'Anakapalle APMC', district: 'Visakhapatnam', state: 'Andhra Pradesh', minPrice: 2050, maxPrice: 2320, modalPrice: 2183, source: 'AGMARKNET' },
+        { id: 2, crop: 'Wheat', marketName: 'Khanna Mandi', district: 'Ludhiana', state: 'Punjab', minPrice: 2275, maxPrice: 2500, modalPrice: 2380, source: 'AGMARKNET' },
+        { id: 3, crop: 'Cotton', marketName: 'Rajkot APMC', district: 'Rajkot', state: 'Gujarat', minPrice: 6800, maxPrice: 7450, modalPrice: 7150, source: 'e-NAM' },
+        { id: 4, crop: 'Gram', marketName: 'Indore Mandi', district: 'Indore', state: 'Madhya Pradesh', minPrice: 5300, maxPrice: 5850, modalPrice: 5600, source: 'AGMARKNET' }
+      ];
+      renderAdminMarketTable();
+    }
+
+    function renderAdminMarketTable() {
+      const tbody = document.getElementById('adminMarketTableBody');
+      if (adminMarkets.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No market prices recorded.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = adminMarkets.map(m => `
+        <tr>
+          <td class="fw-bold text-white">${m.crop}</td>
+          <td>${m.marketName || m.market}</td>
+          <td>${m.district}</td>
+          <td><span class="badge badge-slate">${m.state}</span></td>
+          <td class="text-end text-muted">₹${m.minPrice}</td>
+          <td class="text-end text-muted">₹${m.maxPrice}</td>
+          <td class="text-end fw-bold text-emerald">₹${m.modalPrice || m.price}</td>
+          <td><span class="badge badge-emerald small">${m.source || 'AGMARKNET'}</span></td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-glass me-1" onclick="editMarket(${m.id})" title="Edit rate">
+              <i class="fa-solid fa-pen-to-square text-sky"></i>
+            </button>
+            <button class="btn btn-sm btn-danger-glass" onclick="deleteMarket(${m.id})" title="Delete rate">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.prepareAddMarket = function() {
+      document.getElementById('marketModalTitle').innerHTML = `<i class="fa-solid fa-chart-line text-emerald me-2"></i> Record APMC Mandi Rate`;
+      document.getElementById('marketForm').reset();
+      document.getElementById('marketIdField').value = '';
+    };
+
+    window.editMarket = function(id) {
+      const m = adminMarkets.find(x => x.id === id);
+      if (!m) return;
+
+      document.getElementById('marketModalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald me-2"></i> Edit Mandi Rate: ${m.crop}`;
+      document.getElementById('marketIdField').value = m.id;
+      document.getElementById('mCropField').value = m.crop;
+      document.getElementById('mMarketField').value = m.marketName || m.market || '';
+      document.getElementById('mDistrictField').value = m.district;
+      document.getElementById('mStateField').value = m.state;
+      document.getElementById('mMinPriceField').value = m.minPrice;
+      document.getElementById('mMaxPriceField').value = m.maxPrice;
+      document.getElementById('mModalPriceField').value = m.modalPrice || m.price;
+      document.getElementById('mDateField').value = m.date || 'Today';
+      document.getElementById('mSourceField').value = m.source || 'AGMARKNET';
+
+      const modal = new bootstrap.Modal(document.getElementById('marketModal'));
+      modal.show();
+    };
+
+    window.deleteMarket = async function(id) {
+      if (!confirm('Are you sure you want to delete this market price record?')) return;
+
+      try {
+        await authFetch(`${API_BASE_URL}/api/market-prices/${id}`, { method: 'DELETE' });
+        showNotification('Market rate deleted.', 'info');
+      } catch (e) {
+        showNotification('Offline simulated: Record deleted.', 'info');
+      }
+
+      adminMarkets = adminMarkets.filter(m => m.id !== id);
+      renderAdminMarketTable();
+    };
+
+    /* ==========================================================================
+       TAB C: ANNOUNCEMENTS MANAGEMENT
+       ========================================================================== */
+    async function loadAdminAnnouncements() {
+      try {
+        const res = await authFetch(`${API_BASE_URL}/api/announcements`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            adminAnnouncements = data;
+            renderAdminAnnouncements();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Announcements fetch fallback:', err);
+      }
+
+      adminAnnouncements = [
+        { id: 1, title: 'PM-KISAN 17th Tranche Disbursement', category: 'Subsidy & Scheme', date: 'Today', content: 'Direct benefit transfer credited to verified bank accounts.' },
+        { id: 2, title: 'Kharif Minimum Support Price (MSP) Raised', category: 'Market Policy', date: 'Yesterday', content: 'Cabinet hikes paddy MSP by ₹117 per quintal for upcoming season.' }
+      ];
+      renderAdminAnnouncements();
+    }
+
+    function renderAdminAnnouncements() {
+      const container = document.getElementById('adminAnnouncementsList');
+      if (adminAnnouncements.length === 0) {
+        container.innerHTML = `<div class="text-center py-4 text-muted">No announcements active.</div>`;
+        return;
+      }
+
+      container.innerHTML = adminAnnouncements.map(a => `
+        <div class="glass-panel p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 border border-emerald border-opacity-15">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge badge-emerald">${a.category || 'Official Bulletin'}</span>
+              <small class="text-white-50">${a.date || 'Recent'}</small>
+            </div>
+            <h6 class="text-white fw-bold mb-1">${a.title}</h6>
+            <p class="text-muted small mb-0">${a.content || a.description || ''}</p>
+          </div>
+          <button class="btn btn-sm btn-danger-glass" onclick="deleteAnnouncement(${a.id})" title="Delete Bulletin">
+            <i class="fa-solid fa-trash-can me-1"></i> Delete
+          </button>
+        </div>
+      `).join('');
+    }
+
+    window.deleteAnnouncement = async function(id) {
+      if (!confirm('Are you sure you want to delete this announcement?')) return;
+
+      try {
+        await authFetch(`${API_BASE_URL}/api/announcements/${id}`, { method: 'DELETE' });
+        showNotification('Announcement deleted.', 'info');
+      } catch (e) {
+        showNotification('Offline simulated: Announcement deleted.', 'info');
+      }
+
+      adminAnnouncements = adminAnnouncements.filter(a => a.id !== id);
+      renderAdminAnnouncements();
+    };
+
+    /* ==========================================================================
+       TAB D: FARMER MANAGEMENT
+       ========================================================================== */
+    async function loadAdminFarmers() {
+      try {
+        const res = await authFetch(`${API_BASE_URL}/api/farmers`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            adminFarmers = data;
+            renderAdminFarmers();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Farmers admin API offline:', err);
+      }
+
+      adminFarmers = [
+        { id: 1, name: 'Ramesh Varma', mobile: '9876543210', email: 'ramesh.varma@agriconnect.org', state: 'Andhra Pradesh', district: 'Visakhapatnam', farmSize: 5.5, primaryCrop: 'Rice' },
+        { id: 2, name: 'Gurpreet Singh', mobile: '9876543211', email: 'gurpreet.singh@agriconnect.org', state: 'Punjab', district: 'Ludhiana', farmSize: 12.0, primaryCrop: 'Wheat' },
+        { id: 3, name: 'Sunita Patil', mobile: '9876543212', email: 'sunita.patil@agriconnect.org', state: 'Maharashtra', district: 'Nashik', farmSize: 4.2, primaryCrop: 'Soybean' },
+        { id: 4, name: 'Mohan Lal', mobile: '9876543213', email: 'mohan.lal@agriconnect.org', state: 'Gujarat', district: 'Rajkot', farmSize: 8.0, primaryCrop: 'Cotton' }
+      ];
+      renderAdminFarmers();
+    }
+
+    function renderAdminFarmers() {
+      const tbody = document.getElementById('adminFarmersTableBody');
+      const badge = document.getElementById('farmersCountBadge');
+      if (badge) badge.innerText = `${adminFarmers.length} Cultivators Enrolled`;
+
+      tbody.innerHTML = adminFarmers.map(f => `
+        <tr>
+          <td class="fw-bold text-white"><i class="fa-solid fa-user text-emerald me-2"></i> ${f.name || f.fullName}</td>
+          <td>${f.mobile || f.phoneNumber || '--'}</td>
+          <td class="small text-white-50">${f.email}</td>
+          <td><span class="badge badge-slate">${f.state}</span></td>
+          <td>${f.district}</td>
+          <td>${f.farmSize ? f.farmSize + ' Acres' : '--'}</td>
+          <td><span class="badge badge-emerald">${f.primaryCrop}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    /* ==========================================================================
+       FORM SUBMISSION HANDLERS
+       ========================================================================== */
+    function setupAdminFormSubmissions() {
+      // 1. Crop Form
+      document.getElementById('cropForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('cropIdField').value;
+        const payload = {
+          name: document.getElementById('cropNameField').value.trim(),
+          category: document.getElementById('cropCategoryField').value,
+          season: document.getElementById('cropSeasonField').value.trim(),
+          soilType: document.getElementById('cropSoilField').value.trim(),
+          waterRequirement: document.getElementById('cropWaterField').value.trim(),
+          temperature: document.getElementById('cropTempField').value.trim(),
+          description: document.getElementById('cropDescField').value.trim()
+        };
+
+        const isEdit = Boolean(id);
+        const url = isEdit ? `${API_BASE_URL}/api/crops/${id}` : `${API_BASE_URL}/api/crops`;
+        const method = isEdit ? 'PUT' : 'POST';
+
+        try {
+          await authFetch(url, { method, body: JSON.stringify(payload) });
+          showNotification(isEdit ? 'Crop blueprint updated!' : 'New crop created!', 'success');
+        } catch (err) {
+          // Local update
+          showNotification('Saved to registry (offline simulated).', 'success');
+        }
+
+        if (isEdit) {
+          const idx = adminCrops.findIndex(c => c.id == id);
+          if (idx !== -1) adminCrops[idx] = { id: Number(id), ...payload };
+        } else {
+          adminCrops.push({ id: Date.now(), ...payload });
+        }
+
+        renderAdminCropsTable();
+        bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
+      });
+
+      // 2. Market Form
+      document.getElementById('marketForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('marketIdField').value;
+        const payload = {
+          crop: document.getElementById('mCropField').value.trim(),
+          marketName: document.getElementById('mMarketField').value.trim(),
+          district: document.getElementById('mDistrictField').value.trim(),
+          state: document.getElementById('mStateField').value.trim(),
+          minPrice: parseFloat(document.getElementById('mMinPriceField').value),
+          maxPrice: parseFloat(document.getElementById('mMaxPriceField').value),
+          modalPrice: parseFloat(document.getElementById('mModalPriceField').value),
+          date: document.getElementById('mDateField').value.trim() || '15-Nov-2026',
+          source: document.getElementById('mSourceField').value.trim() || 'AGMARKNET'
+        };
+
+        const isEdit = Boolean(id);
+        const url = isEdit ? `${API_BASE_URL}/api/market-prices/${id}` : `${API_BASE_URL}/api/market-prices`;
+        const method = isEdit ? 'PUT' : 'POST';
+
+        try {
+          await authFetch(url, { method, body: JSON.stringify(payload) });
+          showNotification('Mandi rate record saved!', 'success');
+        } catch (err) {
+          showNotification('Saved to APMC index (offline simulated).', 'success');
+        }
+
+        if (isEdit) {
+          const idx = adminMarkets.findIndex(m => m.id == id);
+          if (idx !== -1) adminMarkets[idx] = { id: Number(id), ...payload };
+        } else {
+          adminMarkets.push({ id: Date.now(), ...payload });
+        }
+
+        renderAdminMarketTable();
+        bootstrap.Modal.getInstance(document.getElementById('marketModal')).hide();
+      });
+
+      // 3. Announcement Form
+      document.getElementById('announcementForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+          title: document.getElementById('annTitleField').value.trim(),
+          category: document.getElementById('annCategoryField').value.trim() || 'Official Notice',
+          content: document.getElementById('annContentField').value.trim(),
+          date: 'Today'
+        };
+
+        try {
+          await authFetch(`${API_BASE_URL}/api/announcements`, { method: 'POST', body: JSON.stringify(payload) });
+          showNotification('Kisan announcement broadcasted!', 'success');
+        } catch (err) {
+          showNotification('Announcement broadcasted (offline simulated).', 'success');
+        }
+
+        adminAnnouncements.unshift({ id: Date.now(), ...payload });
+        renderAdminAnnouncements();
+        document.getElementById('announcementForm').reset();
+        bootstrap.Modal.getInstance(document.getElementById('announcementModal')).hide();
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agriconnect-weather
+  namespace: default
+  labels:
+    app: agriconnect-weather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agriconnect-weather
+  template:
+    metadata:
+      labels:
+        app: agriconnect-weather
+    spec:
+      containers:
+        - name: agriconnect-weather
+          image: agriconnect-weather:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http
+          env:
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: agriconnect-config
+                  key: FLASK_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: agriconnect-config
+                  key: WEATHER_PORT
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

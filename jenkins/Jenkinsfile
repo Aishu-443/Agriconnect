@@ -1,0 +1,89 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE_BACKEND = 'agriconnect-backend'
+        DOCKER_IMAGE_WEATHER = 'agriconnect-weather'
+        BUILD_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
+    }
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+        stage('Build Backend') {
+            steps {
+                dir('agriconnect-backend') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        stage('Test Backend') {
+            steps {
+                dir('agriconnect-backend') {
+                    sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit 'agriconnect-backend/target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Test Weather Service') {
+            steps {
+                dir('weather-service') {
+                    sh 'pip install -r requirements.txt'
+                    sh 'pytest test_app.py -v'
+                }
+            }
+        }
+        stage('Docker Build Backend') {
+            steps {
+                dir('agriconnect-backend') {
+                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:latest -t ${DOCKER_IMAGE_BACKEND}:${BUILD_TAG} ."
+                }
+            }
+        }
+        stage('Docker Build Weather') {
+            steps {
+                dir('weather-service') {
+                    sh "docker build -t ${DOCKER_IMAGE_WEATHER}:latest -t ${DOCKER_IMAGE_WEATHER}:${BUILD_TAG} ."
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f kubernetes/configmap.yaml'
+                sh 'kubectl apply -f kubernetes/secrets.yaml'
+                sh 'kubectl apply -f kubernetes/postgres-pvc.yaml'
+                sh 'kubectl apply -f kubernetes/postgres-deployment.yaml'
+                sh 'kubectl apply -f kubernetes/postgres-service.yaml'
+                sh 'sleep 30'
+                sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
+                sh 'kubectl apply -f kubernetes/backend-service.yaml'
+                sh 'kubectl apply -f kubernetes/weather-deployment.yaml'
+                sh 'kubectl apply -f kubernetes/weather-service.yaml'
+            }
+        }
+        stage('Verify Deployment') {
+            steps {
+                sh 'kubectl rollout status deployment/agriconnect-backend --timeout=120s'
+                sh 'kubectl rollout status deployment/agriconnect-weather --timeout=60s'
+                sh 'kubectl get pods'
+                sh 'kubectl get services'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'SUCCESS: AgriConnect deployed! Backend: http://localhost:30080 | Weather: http://localhost:30500'
+        }
+        failure {
+            echo 'FAILURE: Pipeline failed. Check above logs.'
+            sh 'kubectl get pods --all-namespaces || true'
+        }
+        always {
+            echo 'Pipeline finished. Build: ' + env.BUILD_NUMBER
+            cleanWs()
+        }
+    }
+}

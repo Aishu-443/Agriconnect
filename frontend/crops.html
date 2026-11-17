@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect | Agricultural Crops Library</title>
+  <meta name="description" content="Explore scientifically curated crop blueprints with soil prerequisites, water requirements, temperature parameters, and market linkages.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh">
+
+  <!-- ================= Navigation ================= -->
+  <nav class="navbar navbar-expand-lg navbar-agri">
+    <div class="container">
+      <a class="brand-logo" href="dashboard.html">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <span>AgriConnect</span>
+      </a>
+
+      <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCrops">
+        <i class="fa-solid fa-bars fs-4 text-emerald"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarCrops">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="dashboard.html">
+              <i class="fa-solid fa-gauge-high me-1 text-emerald"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri active" href="crops.html">
+              <i class="fa-solid fa-wheat-awn me-1 text-emerald"></i> Crops
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="market.html">
+              <i class="fa-solid fa-chart-line me-1 text-emerald"></i> Market
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="weather.html">
+              <i class="fa-solid fa-cloud-sun-rain me-1 text-emerald"></i> Weather
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-white-50 small d-none d-md-inline" id="userGreeting">
+            <i class="fa-solid fa-circle-user text-emerald me-1"></i> Farmer
+          </span>
+          <button class="btn btn-glass btn-sm px-3" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= Page Header & Hero ================= -->
+  <section class="py-5 position-relative" style="background: linear-gradient(180deg, rgba(6, 78, 59, 0.4) 0%, rgba(15, 23, 42, 0) 100%);">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small">
+              <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+              <li class="breadcrumb-item active text-emerald" aria-current="page">Crops Library</li>
+            </ol>
+          </nav>
+          <h1 class="display-5 fw-bold text-white mb-2">Scientific Crop Blueprints</h1>
+          <p class="text-muted lead fs-6 mb-0" style="max-width: 650px;">
+            Comprehensive agronomy knowledge repository covering sowing windows, soil chemistry, irrigation cycles, and harvest optimization for Indian agro-climatic zones.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+          <button class="btn btn-outline-emerald" id="filterFavoritesBtn">
+            <i class="fa-solid fa-heart me-1 text-danger"></i> View Saved Favorites
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Search & Filters Toolbar ================= -->
+  <section class="py-3">
+    <div class="container">
+      <div class="glass-card p-3 mb-4">
+        <div class="row g-3 align-items-center">
+          
+          <!-- Search Input -->
+          <div class="col-md-6 col-lg-7">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+              <input type="text" class="form-control" id="cropSearchInput" placeholder="Search crops by name (e.g. Rice, Wheat, Cotton, Mustard)...">
+              <button class="btn btn-glass" type="button" id="clearSearchBtn">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Filter Dropdown -->
+          <div class="col-md-6 col-lg-5">
+            <div class="d-flex align-items-center gap-2">
+              <label for="categoryFilter" class="form-label mb-0 text-nowrap small text-muted">Category:</label>
+              <select class="form-select" id="categoryFilter">
+                <option value="ALL">All Categories</option>
+                <option value="Food Crops">Food Crops (Cereals)</option>
+                <option value="Commercial">Commercial & Cash Crops</option>
+                <option value="Pulses">Pulses & Legumes</option>
+                <option value="Oilseeds">Oilseeds</option>
+                <option value="Horticultural">Horticultural & Fruits</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Tag Badges -->
+        <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top border-white border-opacity-10 align-items-center">
+          <span class="small text-muted me-1">Quick Filter:</span>
+          <button class="badge-agri badge-slate border-0 bg-transparent text-white cursor-pointer quick-tag active" data-cat="ALL">All (15+)</button>
+          <button class="badge-agri badge-emerald border-0 cursor-pointer quick-tag" data-cat="Food Crops">🌾 Food Crops</button>
+          <button class="badge-agri badge-gold border-0 cursor-pointer quick-tag" data-cat="Commercial">💰 Commercial</button>
+          <button class="badge-agri badge-purple border-0 cursor-pointer quick-tag" data-cat="Pulses">🥣 Pulses</button>
+          <button class="badge-agri badge-sky border-0 cursor-pointer quick-tag" data-cat="Oilseeds">💧 Oilseeds</button>
+          <button class="badge-agri badge-rose border-0 cursor-pointer quick-tag" data-cat="Horticultural">🍎 Horticultural</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Crops Card Grid ================= -->
+  <section class="pb-5 mb-5">
+    <div class="container">
+      
+      <!-- Status & Count Indicator -->
+      <div class="d-flex align-items-center justify-content-between mb-3 text-muted small">
+        <span id="cropCountText">Loading crops catalog...</span>
+        <span id="activeFilterBadge" class="badge badge-slate d-none"></span>
+      </div>
+
+      <!-- Crop Cards Container -->
+      <div class="row g-4" id="cropsGrid">
+        <div class="col-12 text-center py-5">
+          <i class="fa-solid fa-spinner fa-spin fs-1 text-emerald mb-3"></i>
+          <h5 class="text-white">Fetching agricultural repository...</h5>
+          <p class="text-muted small">Accessing validated ICAR agronomy recommendations</p>
+        </div>
+      </div>
+
+      <!-- Empty State Container (Hidden by default) -->
+      <div id="noResultsState" class="glass-card text-center p-5 d-none my-4">
+        <i class="fa-solid fa-seedling text-muted fs-1 mb-3 opacity-50"></i>
+        <h4 class="text-white fw-bold mb-2">No Matching Crops Found</h4>
+        <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+          We couldn't find any crop matching your filter criteria. Try clearing search filters or selecting All Categories.
+        </p>
+        <button class="btn btn-emerald" id="resetFiltersBtn">
+          <i class="fa-solid fa-rotate-left"></i> Reset All Filters
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= Footer ================= -->
+  <footer class="footer-agri mt-auto">
+    <div class="container text-center text-muted small">
+      <p class="mb-0">&copy; 2026 AgriConnect. Verified ICAR & State Agriculture Universities Agronomy Guide.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth JS -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <!-- Crops JS -->
+  <script src="js/crops.js"></script>
+</body>
+</html>

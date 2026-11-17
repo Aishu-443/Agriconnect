@@ -1,0 +1,4 @@
+This is the AgriConnect sample file for Git/GitHub demonstration.
+Created as part of the DevOps course syllabus - Module 2: GitHub Repository.
+Project: AgriConnect - Smart Agriculture and Farmer Support Platform.
+Author: AgriConnect Team

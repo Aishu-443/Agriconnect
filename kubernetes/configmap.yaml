@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agriconnect-config
+  namespace: default
+data:
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "agriconnect_db"
+  SPRING_PROFILES_ACTIVE: "prod"
+  FLASK_ENV: "production"
+  SERVER_PORT: "8080"
+  WEATHER_PORT: "5000"

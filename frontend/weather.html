@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect | Agro-Meteorological Weather & Advisory Radar</title>
+  <meta name="description" content="Hyper-local 7-day agricultural weather forecast and intelligent farm advisories for irrigation planning and pest management.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh">
+
+  <!-- ================= Navigation ================= -->
+  <nav class="navbar navbar-expand-lg navbar-agri">
+    <div class="container">
+      <a class="brand-logo" href="dashboard.html">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <span>AgriConnect</span>
+      </a>
+
+      <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWeather">
+        <i class="fa-solid fa-bars fs-4 text-emerald"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarWeather">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="dashboard.html">
+              <i class="fa-solid fa-gauge-high me-1 text-emerald"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="crops.html">
+              <i class="fa-solid fa-wheat-awn me-1 text-emerald"></i> Crops
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="market.html">
+              <i class="fa-solid fa-chart-line me-1 text-emerald"></i> Market
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri active" href="weather.html">
+              <i class="fa-solid fa-cloud-sun-rain me-1 text-emerald"></i> Weather
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-white-50 small d-none d-md-inline" id="userGreeting">
+            <i class="fa-solid fa-circle-user text-emerald me-1"></i> Farmer
+          </span>
+          <button class="btn btn-glass btn-sm px-3" onclick="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= Hero Header ================= -->
+  <section class="py-5 position-relative" style="background: linear-gradient(180deg, rgba(6, 78, 59, 0.4) 0%, rgba(15, 23, 42, 0) 100%);">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+          <li class="breadcrumb-item active text-emerald" aria-current="page">Weather Advisory</li>
+        </ol>
+      </nav>
+
+      <div class="row align-items-center justify-content-between g-3">
+        <div class="col-lg-8">
+          <h1 class="display-5 fw-bold text-white mb-2">Agro-Meteorological Advisory Radar</h1>
+          <p class="text-muted lead fs-6 mb-0" style="max-width: 680px;">
+            Precision satellite meteorological forecasts calibrated for field crops. Synchronize irrigation cycles, fertilizer spray, and harvest operations.
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <button class="btn btn-outline-emerald" id="useCurrentLocationBtn">
+            <i class="fa-solid fa-crosshairs me-1 text-sky"></i> Detect My Farm GPS
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Coordinates Search & Quick Select Cities ================= -->
+  <section class="py-2">
+    <div class="container">
+      <div class="glass-card p-3 mb-4">
+        <form id="weatherSearchForm">
+          <div class="row g-3 align-items-end">
+            
+            <!-- Latitude Input -->
+            <div class="col-md-4">
+              <label for="latInput" class="form-label">Latitude (°N)</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-compass"></i></span>
+                <input type="number" step="0.0001" class="form-control" id="latInput" value="17.6868" required>
+              </div>
+            </div>
+
+            <!-- Longitude Input -->
+            <div class="col-md-4">
+              <label for="lonInput" class="form-label">Longitude (°E)</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fa-solid fa-location-arrow"></i></span>
+                <input type="number" step="0.0001" class="form-control" id="lonInput" value="83.2185" required>
+              </div>
+            </div>
+
+            <!-- Search Action Button -->
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-emerald w-100 py-2" id="fetchWeatherBtn">
+                <i class="fa-solid fa-bolt"></i> Fetch Live Forecast
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+        <!-- Quick Select Major Agricultural & Metropolitan Cities -->
+        <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top border-white border-opacity-10 align-items-center">
+          <span class="small text-muted me-1">Quick Select Hub:</span>
+          <button type="button" class="badge-agri badge-emerald border-0 cursor-pointer quick-city-btn" data-lat="17.6868" data-lon="83.2185" data-name="Visakhapatnam">
+            📍 Visakhapatnam (17.69°N, 83.22°E)
+          </button>
+          <button type="button" class="badge-agri badge-sky border-0 cursor-pointer quick-city-btn" data-lat="28.6139" data-lon="77.2090" data-name="Delhi">
+            📍 Delhi (28.61°N, 77.21°E)
+          </button>
+          <button type="button" class="badge-agri badge-gold border-0 cursor-pointer quick-city-btn" data-lat="19.0760" data-lon="72.8777" data-name="Mumbai">
+            📍 Mumbai (19.08°N, 72.88°E)
+          </button>
+          <button type="button" class="badge-agri badge-purple border-0 cursor-pointer quick-city-btn" data-lat="13.0827" data-lon="80.2707" data-name="Chennai">
+            📍 Chennai (13.08°N, 80.27°E)
+          </button>
+          <button type="button" class="badge-agri badge-rose border-0 cursor-pointer quick-city-btn" data-lat="17.3850" data-lon="78.4867" data-name="Hyderabad">
+            📍 Hyderabad (17.38°N, 78.49°E)
+          </button>
+          <button type="button" class="badge-agri badge-slate border-0 cursor-pointer quick-city-btn" data-lat="12.9716" data-lon="77.5946" data-name="Bengaluru">
+            📍 Bengaluru (12.97°N, 77.59°E)
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Current Weather Card ================= -->
+  <section class="py-2 mb-4">
+    <div class="container">
+      
+      <div class="weather-hero-card">
+        <div class="row align-items-center">
+          
+          <div class="col-lg-7">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge badge-emerald" id="weatherSourceBadge">LIVE SATELLITE FEED</span>
+              <span class="text-white-50 small" id="currentLocationLabel">Visakhapatnam, Andhra Pradesh</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-4 my-3">
+              <div class="weather-temp-big" id="currentTempBig">29°C</div>
+              <div>
+                <h3 class="text-white fw-bold mb-0" id="currentConditionTitle">Partly Cloudy</h3>
+                <span class="text-white-50" id="currentFeelsLike">Feels like 31°C</span>
+              </div>
+            </div>
+
+            <p class="text-muted mb-0 small" id="currentSummaryText">
+              Atmospheric conditions are stable. Relative humidity is within normal transpiration boundaries for coastal Kharif crops.
+            </p>
+          </div>
+
+          <div class="col-lg-5 mt-4 mt-lg-0 text-lg-end">
+            <div class="d-flex justify-content-lg-end align-items-center mb-3">
+              <i class="fa-solid fa-cloud-sun weather-icon-big" id="currentWeatherBigIcon"></i>
+            </div>
+
+            <!-- Weather Metric Pills -->
+            <div class="row g-2 text-start">
+              <div class="col-6">
+                <div class="glass-panel p-2">
+                  <div class="text-muted small"><i class="fa-solid fa-droplet text-sky me-1"></i> Humidity</div>
+                  <div class="text-white fw-bold fs-6" id="metricHumidity">68%</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="glass-panel p-2">
+                  <div class="text-muted small"><i class="fa-solid fa-wind text-info me-1"></i> Wind Speed</div>
+                  <div class="text-white fw-bold fs-6" id="metricWind">12 km/h</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="glass-panel p-2">
+                  <div class="text-muted small"><i class="fa-solid fa-cloud-rain text-emerald me-1"></i> Rain Probability</div>
+                  <div class="text-white fw-bold fs-6" id="metricRainProb">15%</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="glass-panel p-2">
+                  <div class="text-muted small"><i class="fa-solid fa-gauge-high text-warning me-1"></i> Pressure</div>
+                  <div class="text-white fw-bold fs-6" id="metricPressure">1012 hPa</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 7-Day Forecast Section ================= -->
+  <section class="py-2 mb-4">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+          <h4 class="text-white fw-bold mb-0">
+            <i class="fa-solid fa-calendar-week text-emerald me-2"></i> 7-Day Agricultural Forecast
+          </h4>
+          <small class="text-muted">Daily precipitation, minimum & maximum temperature projections</small>
+        </div>
+        <span class="text-white-50 small"><i class="fa-solid fa-arrows-left-right me-1"></i> Scroll horizontally</span>
+      </div>
+
+      <!-- Horizontal Scrollable Container -->
+      <div class="forecast-scroll-container" id="forecastScrollContainer">
+        <div class="text-center py-4 w-100 text-muted">
+          <i class="fa-solid fa-spinner fa-spin fs-4 mb-2"></i>
+          <div>Generating 7-day agro-meteorological projections...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Agricultural Advisory Section ================= -->
+  <section class="pb-5 mb-5">
+    <div class="container">
+      <div class="glass-card p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div>
+            <h4 class="text-white fw-bold mb-0">
+              <i class="fa-solid fa-shield-virus text-emerald me-2"></i> Agronomic Advisory & Crop Protection
+            </h4>
+            <small class="text-muted">Smart recommendations generated from current meteorological parameters</small>
+          </div>
+          <span class="badge badge-emerald"><i class="fa-solid fa-robot me-1"></i> AI Advisory Active</span>
+        </div>
+
+        <div class="row g-4" id="advisoryCardsGrid">
+          
+          <!-- Advisory Card 1: Irrigation -->
+          <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-3 h-100 border-start border-3 border-emerald">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-faucet-drip text-emerald fs-5"></i>
+                <h6 class="text-white fw-bold mb-0">Irrigation Timing</h6>
+              </div>
+              <p class="text-muted small mb-2" id="advisoryIrrigation">
+                Relative humidity is currently &gt; 60%. Soil moisture retention is optimal. Defer flood irrigation by 24 hours to prevent root water-logging.
+              </p>
+              <span class="badge badge-emerald small" id="advisoryIrrigationBadge">Low Irrigation Urgency</span>
+            </div>
+          </div>
+
+          <!-- Advisory Card 2: Spraying & Pesticide -->
+          <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-3 h-100 border-start border-3 border-sky">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-spray-can text-sky fs-5"></i>
+                <h6 class="text-white fw-bold mb-0">Spray & Chemical App</h6>
+              </div>
+              <p class="text-muted small mb-2" id="advisorySpray">
+                Wind speed is 12 km/h (&lt; 15 km/h threshold). Ideal weather window for foliar pesticide or urea spray without high droplet drift.
+              </p>
+              <span class="badge badge-sky small" id="advisorySprayBadge">Safe to Spray</span>
+            </div>
+          </div>
+
+          <!-- Advisory Card 3: Pest Warning -->
+          <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-3 h-100 border-start border-3 border-warning">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-bug text-warning fs-5"></i>
+                <h6 class="text-white fw-bold mb-0">Pest & Fungal Risk</h6>
+              </div>
+              <p class="text-muted small mb-2" id="advisoryPest">
+                Humid, overcast canopy creates favorable micro-climate for blast and leaf blight in paddy. Inspect lower leaf sheaths regularly.
+              </p>
+              <span class="badge badge-gold small" id="advisoryPestBadge">Moderate Caution</span>
+            </div>
+          </div>
+
+          <!-- Advisory Card 4: Sowing & Harvest -->
+          <div class="col-md-6 col-lg-3">
+            <div class="glass-panel p-3 h-100 border-start border-3 border-purple">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-seedling text-purple fs-5"></i>
+                <h6 class="text-white fw-bold mb-0">Harvest & Drying</h6>
+              </div>
+              <p class="text-muted small mb-2" id="advisoryHarvest">
+                No heavy downpour forecast over the next 48 hours. Favorable window for sun-drying harvested pulses and threshed grains.
+              </p>
+              <span class="badge badge-purple small" id="advisoryHarvestBadge">Favorable Window</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Footer ================= -->
+  <footer class="footer-agri mt-auto">
+    <div class="container text-center text-muted small">
+      <p class="mb-0">&copy; 2026 AgriConnect. Meteorological Feed powered by National Agro-Climatic Intelligence.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth JS -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <!-- Weather JS -->
+  <script src="js/weather.js"></script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriConnect | Smart Farming, Better Decisions</title>
+  <meta name="description" content="AI & Data-driven agricultural intelligence platform empowering Indian farmers with real-time crop insights, mandi prices, and weather advisories.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Design System -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-mesh">
+
+  <!-- ================= Sticky Navbar ================= -->
+  <nav class="navbar navbar-expand-lg navbar-agri">
+    <div class="container">
+      <a class="brand-logo" href="index.html">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <span>AgriConnect</span>
+      </a>
+      
+      <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAgriContent">
+        <i class="fa-solid fa-bars fs-4 text-emerald"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarAgriContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri active" href="index.html">
+              <i class="fa-solid fa-house me-1 text-emerald"></i> Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="crops.html">
+              <i class="fa-solid fa-wheat-awn me-1 text-emerald"></i> Crops
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="market.html">
+              <i class="fa-solid fa-chart-line me-1 text-emerald"></i> Market
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-agri" href="weather.html">
+              <i class="fa-solid fa-cloud-sun-rain me-1 text-emerald"></i> Weather
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2" id="navAuthSection">
+          <a href="login.html" class="btn btn-glass btn-sm px-3">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </a>
+          <a href="register.html" class="btn btn-emerald btn-sm px-3">
+            <i class="fa-solid fa-user-plus"></i> Register
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= Hero Section ================= -->
+  <header class="hero-mesh position-relative d-flex align-items-center" style="min-height: 90vh;">
+    <!-- Animated Floating Icons -->
+    <div class="floating-icon icon-wheat">
+      <i class="fa-solid fa-wheat-awn"></i>
+    </div>
+    <div class="floating-icon icon-sun">
+      <i class="fa-solid fa-sun"></i>
+    </div>
+    <div class="floating-icon icon-rain">
+      <i class="fa-solid fa-cloud-showers-heavy"></i>
+    </div>
+    <div class="floating-icon icon-leaf">
+      <i class="fa-solid fa-leaf"></i>
+    </div>
+
+    <div class="container py-5 position-relative" style="z-index: 2;">
+      <div class="row align-items-center justify-content-center text-center">
+        <div class="col-lg-9 col-xl-8 animate-fade-in">
+          
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4 glass-panel border" style="border-color: rgba(16, 185, 129, 0.3) !important;">
+            <span class="badge bg-emerald text-dark fw-bold" style="background-color: var(--primary) !important;">NEW</span>
+            <span class="text-white-50 small">Precision Agritech Intelligence Platform</span>
+          </div>
+
+          <h1 class="display-3 fw-bolder mb-3 text-white" style="letter-spacing: -0.03em;">
+            Smart Farming, <br>
+            <span style="background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+              Better Decisions
+            </span>
+          </h1>
+
+          <p class="lead text-muted mb-4 mx-auto" style="max-width: 680px; font-size: 1.25rem;">
+            Empowering modern agriculture with hyper-local weather alerts, real-time APMC mandi commodity prices, and scientifically validated crop cultivation playbooks.
+          </p>
+
+          <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="register.html" class="btn btn-emerald btn-lg shadow">
+              <i class="fa-solid fa-compass"></i> Get Started Free
+            </a>
+            <a href="market.html" class="btn btn-outline-emerald btn-lg">
+              <i class="fa-solid fa-chart-column"></i> View Live Market Prices
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="mt-5 pt-3 d-flex flex-wrap justify-content-center gap-4 text-muted small">
+            <div><i class="fa-solid fa-shield-halved text-emerald me-1"></i> 100% Verified Mandi Feeds</div>
+            <div><i class="fa-solid fa-satellite text-emerald me-1"></i> Satellite Weather Model</div>
+            <div><i class="fa-solid fa-lock text-emerald me-1"></i> Secure Farmer Profile</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Stats Counter Section ================= -->
+  <section class="py-5" style="background: rgba(15, 23, 42, 0.6); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="row g-4 text-center">
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-4">
+            <div class="text-emerald fs-1 fw-bolder counter-val" data-target="15">0</div>
+            <div class="text-muted fw-semibold mt-1">15+ Crop Blueprints</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-4">
+            <div class="text-emerald fs-1 fw-bolder counter-val" data-target="100">0</div>
+            <div class="text-muted fw-semibold mt-1">100+ Live Mandis</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-4">
+            <div class="text-emerald fs-1 fw-bolder counter-val" data-target="28">0</div>
+            <div class="text-muted fw-semibold mt-1">28 States Covered</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="glass-card p-4">
+            <div class="text-emerald fs-1 fw-bolder counter-val" data-target="24">0</div>
+            <div class="text-muted fw-semibold mt-1">24/7 Weather Forecasts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Features Grid ================= -->
+  <section class="py-5 my-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="badge badge-emerald px-3 py-2 mb-2">POWERFUL CAPABILITIES</span>
+        <h2 class="display-5 fw-bold text-white">Everything a Farmer Needs to Thrive</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+          Designed from the ground up to address real agricultural challenges with accessible data and actionable intelligence.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Feature 1: Crop Info -->
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card glass-card-hover p-4 h-100 d-flex flex-direction-column">
+            <div class="stat-icon mb-3" style="background: rgba(16, 185, 129, 0.15); color: var(--primary-light);">
+              <i class="fa-solid fa-wheat-awn fs-3"></i>
+            </div>
+            <h4 class="text-white mb-2">Crop Info</h4>
+            <p class="text-muted flex-grow-1">
+              Comprehensive scientific agronomy guides covering soil prep, optimal sowing temperature, water schedules, and harvesting.
+            </p>
+            <a href="crops.html" class="text-emerald fw-semibold small mt-3 d-inline-flex align-items-center gap-1">
+              Explore library <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 2: Market Prices -->
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card glass-card-hover p-4 h-100 d-flex flex-direction-column">
+            <div class="stat-icon mb-3" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold);">
+              <i class="fa-solid fa-arrow-trend-up fs-3"></i>
+            </div>
+            <h4 class="text-white mb-2">Market Prices</h4>
+            <p class="text-muted flex-grow-1">
+              Real-time APMC mandi commodity rates with Min, Max, and Modal price analysis across districts to maximize sales revenue.
+            </p>
+            <a href="market.html" class="text-emerald fw-semibold small mt-3 d-inline-flex align-items-center gap-1">
+              Check prices <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 3: Weather Updates -->
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card glass-card-hover p-4 h-100 d-flex flex-direction-column">
+            <div class="stat-icon mb-3" style="background: rgba(14, 165, 233, 0.15); color: var(--accent-sky);">
+              <i class="fa-solid fa-cloud-sun-rain fs-3"></i>
+            </div>
+            <h4 class="text-white mb-2">Weather Updates</h4>
+            <p class="text-muted flex-grow-1">
+              Hyper-local 7-day weather predictions with automated agricultural advisories for pest management and irrigation timing.
+            </p>
+            <a href="weather.html" class="text-emerald fw-semibold small mt-3 d-inline-flex align-items-center gap-1">
+              View forecasts <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Feature 4: Farmer Profiles -->
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card glass-card-hover p-4 h-100 d-flex flex-direction-column">
+            <div class="stat-icon mb-3" style="background: rgba(139, 92, 246, 0.15); color: var(--accent-purple);">
+              <i class="fa-solid fa-id-card-clip fs-3"></i>
+            </div>
+            <h4 class="text-white mb-2">Farmer Profiles</h4>
+            <p class="text-muted flex-grow-1">
+              Personalized dashboard matching your farm acreage, soil conditions, saved crops, and targeted regional government subsidies.
+            </p>
+            <a href="dashboard.html" class="text-emerald fw-semibold small mt-3 d-inline-flex align-items-center gap-1">
+              Open portal <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= How It Works Section ================= -->
+  <section class="py-5" style="background: rgba(15, 23, 42, 0.7);">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <span class="badge badge-sky px-3 py-2 mb-2">SIMPLE 3-STEP PROCESS</span>
+        <h2 class="display-5 fw-bold text-white">How AgriConnect Empowers You</h2>
+        <p class="text-muted mx-auto" style="max-width: 580px;">
+          Seamlessly transition from intuition-based farming to high-yield data-driven precision.
+        </p>
+      </div>
+
+      <div class="row g-4 align-items-center">
+        <!-- Step 1 -->
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center position-relative">
+            <div class="badge rounded-circle bg-emerald text-dark fw-bold mb-3 fs-5" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;">
+              1
+            </div>
+            <h4 class="text-white mb-3">Create Farmer Profile</h4>
+            <p class="text-muted">
+              Register your farm location, soil characteristics, primary crops, and acreage to unlock personalized advisory services.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center position-relative">
+            <div class="badge rounded-circle bg-emerald text-dark fw-bold mb-3 fs-5" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;">
+              2
+            </div>
+            <h4 class="text-white mb-3">Track Weather & Mandis</h4>
+            <p class="text-muted">
+              Receive live alerts regarding monsoon progress, sudden rainfall probability, and compare market prices across nearby mandis.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center position-relative">
+            <div class="badge rounded-circle bg-emerald text-dark fw-bold mb-3 fs-5" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;">
+              3
+            </div>
+            <h4 class="text-white mb-3">Harvest & Sell Profitably</h4>
+            <p class="text-muted">
+              Utilize scientific cultivation advice throughout the crop lifecycle and time market dispatches to earn maximum profit margins.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Testimonials Carousel ================= -->
+  <section class="py-5 my-5">
+    <div class="container">
+      <div class="text-center mb-5">
+        <span class="badge badge-gold px-3 py-2 mb-2">COMMUNITY STORIES</span>
+        <h2 class="display-5 fw-bold text-white">Trusted by Indian Farmers</h2>
+        <p class="text-muted mx-auto" style="max-width: 580px;">
+          Hear how farmers across Punjab, Andhra Pradesh, and Maharashtra transformed their agricultural yield.
+        </p>
+      </div>
+
+      <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <!-- Testimonial 1 -->
+          <div class="carousel-item active">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="glass-card p-5 text-center position-relative">
+                  <i class="fa-solid fa-quote-left text-emerald fs-1 opacity-25 position-absolute top-0 start-0 m-4"></i>
+                  <p class="fs-5 text-light fst-italic mb-4">
+                    "With AgriConnect's daily APMC modal price comparison, I bypassed local middlemen and sold my Basmati paddy in Gurdaspur at ₹4,150/quintal instead of ₹3,700. That's an extra ₹90,000 profit on my 8-acre harvest!"
+                  </p>
+                  <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="rounded-circle bg-emerald d-flex align-items-center justify-content-center text-dark fw-bold" style="width: 52px; height: 52px; font-size: 1.2rem;">
+                      GS
+                    </div>
+                    <div class="text-start">
+                      <h6 class="text-white mb-0 fw-bold">Gurpreet Singh</h6>
+                      <small class="text-emerald">Paddy & Wheat Farmer, Punjab</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="carousel-item">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="glass-card p-5 text-center position-relative">
+                  <i class="fa-solid fa-quote-left text-emerald fs-1 opacity-25 position-absolute top-0 start-0 m-4"></i>
+                  <p class="fs-5 text-light fst-italic mb-4">
+                    "The hyper-local rain forecast saved my chilli crop from an unexpected unseasonal downpour. The agricultural advisory recommended delaying fertilizer application, preserving thousands in input costs."
+                  </p>
+                  <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="rounded-circle bg-emerald d-flex align-items-center justify-content-center text-dark fw-bold" style="width: 52px; height: 52px; font-size: 1.2rem;">
+                      RV
+                    </div>
+                    <div class="text-start">
+                      <h6 class="text-white mb-0 fw-bold">Ramesh Varma</h6>
+                      <small class="text-emerald">Chilli & Cotton Cultivator, Guntur, AP</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="carousel-item">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="glass-card p-5 text-center position-relative">
+                  <i class="fa-solid fa-quote-left text-emerald fs-1 opacity-25 position-absolute top-0 start-0 m-4"></i>
+                  <p class="fs-5 text-light fst-italic mb-4">
+                    "The crop blueprint for soybean was remarkably thorough. Clear irrigation schedules and soil preparation advice allowed our cooperative to boost yield by nearly 22% in our very first season."
+                  </p>
+                  <div class="d-flex align-items-center justify-content-center gap-3">
+                    <div class="rounded-circle bg-emerald d-flex align-items-center justify-content-center text-dark fw-bold" style="width: 52px; height: 52px; font-size: 1.2rem;">
+                      SP
+                    </div>
+                    <div class="text-start">
+                      <h6 class="text-white mb-0 fw-bold">Sunita Patil</h6>
+                      <small class="text-emerald">Soybean & Pulses Producer, Nashik, MH</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA Banner ================= -->
+  <section class="py-5">
+    <div class="container">
+      <div class="glass-card p-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(6, 78, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <h2 class="display-6 fw-bold text-white mb-3">Ready to Upgrade Your Agricultural Harvest?</h2>
+        <p class="text-muted mx-auto mb-4" style="max-width: 580px;">
+          Join thousands of smart farmers who rely on AgriConnect daily for crop knowledge, mandi prices, and weather alerts.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a href="register.html" class="btn btn-emerald btn-lg px-4">
+            <i class="fa-solid fa-user-plus"></i> Create Free Account
+          </a>
+          <a href="crops.html" class="btn btn-glass btn-lg px-4">
+            <i class="fa-solid fa-compass"></i> Explore Crops
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Footer ================= -->
+  <footer class="footer-agri">
+    <div class="container">
+      <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+          <a class="brand-logo mb-3 d-inline-flex" href="index.html">
+            <div class="brand-icon">
+              <i class="fa-solid fa-seedling"></i>
+            </div>
+            <span>AgriConnect</span>
+          </a>
+          <p class="text-muted small pe-lg-4">
+            Next-generation agricultural technology platform connecting farmers to high-precision agronomy insights, live market mandi prices, and real-time meteorological advisories.
+          </p>
+          <div class="d-flex gap-2 mt-3">
+            <a href="#" class="social-icon-btn"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="social-icon-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h6 class="text-white fw-bold mb-3">Navigation</h6>
+          <a href="index.html" class="footer-link">Home</a>
+          <a href="crops.html" class="footer-link">Crops Library</a>
+          <a href="market.html" class="footer-link">Market Prices</a>
+          <a href="weather.html" class="footer-link">Weather Forecast</a>
+        </div>
+
+        <div class="col-6 col-lg-2">
+          <h6 class="text-white fw-bold mb-3">Platform</h6>
+          <a href="dashboard.html" class="footer-link">Farmer Portal</a>
+          <a href="login.html" class="footer-link">Sign In</a>
+          <a href="register.html" class="footer-link">Register Farm</a>
+          <a href="admin.html" class="footer-link">Admin Console</a>
+        </div>
+
+        <div class="col-lg-4">
+          <h6 class="text-white fw-bold mb-3">Kisan Helpline & Support</h6>
+          <p class="text-muted small mb-2">
+            <i class="fa-solid fa-phone text-emerald me-2"></i> Toll Free: 1800-180-1551 (Kisan Call Center)
+          </p>
+          <p class="text-muted small mb-2">
+            <i class="fa-solid fa-envelope text-emerald me-2"></i> support@agriconnect.org
+          </p>
+          <p class="text-muted small">
+            <i class="fa-solid fa-location-dot text-emerald me-2"></i> Visakhapatnam & New Delhi, India
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-4 border-top border-secondary border-opacity-25 text-center text-muted small">
+        <p class="mb-0">&copy; 2026 AgriConnect Intelligence System. All rights reserved. Built with precision for Indian Agriculture.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Auth Helper -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+
+  <!-- Dynamic Nav & Counter Animation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dynamic auth buttons in navbar
+      const navAuthSection = document.getElementById('navAuthSection');
+      if (isLoggedIn()) {
+        const user = getUserFromToken();
+        const displayName = (user && user.name) ? user.name.split(' ')[0] : 'Farmer';
+        navAuthSection.innerHTML = `
+          <a href="dashboard.html" class="btn btn-glass btn-sm px-3">
+            <i class="fa-solid fa-user-check text-emerald me-1"></i> ${displayName}
+          </a>
+          <a href="dashboard.html" class="btn btn-emerald btn-sm px-3">
+            <i class="fa-solid fa-gauge-high"></i> Dashboard
+          </a>
+        `;
+      }
+
+      // Animated counters
+      const counters = document.querySelectorAll('.counter-val');
+      const speed = 60;
+
+      const runCounters = () => {
+        counters.forEach(counter => {
+          const target = +counter.getAttribute('data-target');
+          let count = 0;
+          const inc = Math.max(1, Math.floor(target / speed));
+          
+          const updateCount = () => {
+            count += inc;
+            if (count < target) {
+              counter.innerText = count + '+';
+              setTimeout(updateCount, 25);
+            } else {
+              counter.innerText = target + '+';
+            }
+          };
+          updateCount();
+        });
+      };
+
+      // Intersection Observer to trigger counters when visible
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            runCounters();
+            obs.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      const statsSection = document.querySelector('.counter-val');
+      if (statsSection) {
+        observer.observe(statsSection.parentElement);
+      }
+    });
+  </script>
+</body>
+</html>
