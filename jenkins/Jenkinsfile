@@ -1,88 +1,112 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE_BACKEND = 'agriconnect-backend'
-        DOCKER_IMAGE_WEATHER = 'agriconnect-weather'
-        BUILD_TAG = "${env.BUILD_NUMBER ?: 'latest'}"
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
     }
+
+    environment {
+        DOCKER_EXE = 'C:\\Users\\bomma\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+        KUBECTL_EXE = 'C:\\Users\\bomma\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe'
+        MAVEN_EXE = 'C:\\Tools\\apache-maven\\bin\\mvn.cmd'
+        PYTHON_EXE = 'C:\\Program Files\\Python314\\python.exe'
+        KUBECONFIG = 'C:\\Users\\bomma\\.kube\\config'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Checkout') {
-            steps { checkout scm }
-        }
-        stage('Build Backend') {
             steps {
-                dir('agriconnect-backend') {
-                    sh 'mvn clean package -DskipTests'
-                }
+                checkout scm
             }
         }
-        stage('Test Backend') {
+
+        stage('Build and Test Backend') {
             steps {
                 dir('agriconnect-backend') {
-                    sh 'mvn test'
+                    bat '"%MAVEN_EXE%" -B clean verify'
                 }
             }
             post {
                 always {
-                    junit 'agriconnect-backend/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true,
+                          testResults: 'agriconnect-backend/target/surefire-reports/*.xml'
                 }
             }
         }
+
         stage('Test Weather Service') {
             steps {
                 dir('weather-service') {
-                    sh 'pip install -r requirements.txt'
-                    sh 'pytest test_app.py -v'
+                    bat '"%PYTHON_EXE%" -m venv .venv'
+                    bat '.venv\\Scripts\\python.exe -m pip install --disable-pip-version-check -r requirements.txt'
+                    bat '.venv\\Scripts\\python.exe -m pytest test_app.py -v'
                 }
             }
         }
-        stage('Docker Build Backend') {
+
+        stage('Build Docker Images') {
             steps {
                 dir('agriconnect-backend') {
-                    sh "docker build -t ${DOCKER_IMAGE_BACKEND}:latest -t ${DOCKER_IMAGE_BACKEND}:${BUILD_TAG} ."
+                    bat '"%DOCKER_EXE%" build -t agriconnect-backend:%IMAGE_TAG% .'
                 }
-            }
-        }
-        stage('Docker Build Weather') {
-            steps {
+
                 dir('weather-service') {
-                    sh "docker build -t ${DOCKER_IMAGE_WEATHER}:latest -t ${DOCKER_IMAGE_WEATHER}:${BUILD_TAG} ."
+                    bat '"%DOCKER_EXE%" build -t agriconnect-weather:%IMAGE_TAG% .'
+                }
+
+                dir('frontend') {
+                    bat '"%DOCKER_EXE%" build -t agriconnect-frontend:%IMAGE_TAG% .'
                 }
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f kubernetes/configmap.yaml'
-                sh 'kubectl apply -f kubernetes/secrets.yaml'
-                sh 'kubectl apply -f kubernetes/postgres-pvc.yaml'
-                sh 'kubectl apply -f kubernetes/postgres-deployment.yaml'
-                sh 'kubectl apply -f kubernetes/postgres-service.yaml'
-                sh 'sleep 30'
-                sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
-                sh 'kubectl apply -f kubernetes/backend-service.yaml'
-                sh 'kubectl apply -f kubernetes/weather-deployment.yaml'
-                sh 'kubectl apply -f kubernetes/weather-service.yaml'
+                bat '"%KUBECTL_EXE%" get secret agriconnect-secrets'
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\configmap.yaml'
+
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\backend-service.yaml'
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\backend-deployment.yaml'
+
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\weather-service.yaml'
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\weather-deployment.yaml'
+
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\frontend-service.yaml'
+                bat '"%KUBECTL_EXE%" apply -f kubernetes\\frontend-deployment.yaml'
+
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-backend agriconnect-backend=agriconnect-backend:%IMAGE_TAG%'
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-weather agriconnect-weather=agriconnect-weather:%IMAGE_TAG%'
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-frontend frontend=agriconnect-frontend:%IMAGE_TAG%'
             }
         }
+
         stage('Verify Deployment') {
             steps {
-                sh 'kubectl rollout status deployment/agriconnect-backend --timeout=120s'
-                sh 'kubectl rollout status deployment/agriconnect-weather --timeout=60s'
-                sh 'kubectl get pods'
-                sh 'kubectl get services'
+                bat '"%KUBECTL_EXE%" rollout status deployment/agriconnect-backend --timeout=180s'
+                bat '"%KUBECTL_EXE%" rollout status deployment/agriconnect-weather --timeout=120s'
+                bat '"%KUBECTL_EXE%" rollout status deployment/agriconnect-frontend --timeout=120s'
+
+                bat '"%KUBECTL_EXE%" get deployments'
+                bat '"%KUBECTL_EXE%" get pods'
+                bat '"%KUBECTL_EXE%" get services'
             }
         }
     }
+
     post {
         success {
-            echo 'SUCCESS: AgriConnect deployed! Backend: http://localhost:30080 | Weather: http://localhost:30500'
+            echo 'SUCCESS: AgriConnect CI/CD pipeline completed!'
         }
+
         failure {
-            echo 'FAILURE: Pipeline failed. Check above logs.'
-            sh 'kubectl get pods --all-namespaces || true'
+            echo 'FAILURE: Check the pipeline logs.'
+            bat '"%KUBECTL_EXE%" get pods -A'
         }
+
         always {
-            echo 'Pipeline finished. Build: ' + env.BUILD_NUMBER
+            echo "Build ${env.BUILD_NUMBER} finished."
             cleanWs()
         }
     }
