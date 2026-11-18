@@ -4,8 +4,8 @@
  */
 
 const TOKEN_KEY = 'agriconnect_token';
-const API_BASE_URL = (window.APP_CONFIG && window.APP_CONFIG.apiBaseUrl) || 'http://localhost:8080';
-const WEATHER_BASE_URL = (window.APP_CONFIG && window.APP_CONFIG.weatherBaseUrl) || 'http://localhost:5000';
+const API_BASE_URL = (window.APP_CONFIG && window.APP_CONFIG.apiBaseUrl) || '';
+const WEATHER_BASE_URL = (window.APP_CONFIG && window.APP_CONFIG.weatherBaseUrl) || '';
 
 /**
  * Retrieve JWT token from localStorage

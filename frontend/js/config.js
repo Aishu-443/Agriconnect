@@ -1,7 +1,8 @@
 /**
- * Runtime configuration for Kubernetes testing.
+ * Runtime configuration for all deployment environments.
+ * API requests use the same origin as the frontend.
  */
 window.APP_CONFIG = {
-  apiBaseUrl: 'http://localhost:8084',
-  weatherBaseUrl: 'http://localhost:5001'
+  apiBaseUrl: '',
+  weatherBaseUrl: ''
 };
