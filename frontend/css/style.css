@@ -1171,3 +1171,27 @@ p {
     color: #FFFFFF !important;
 }
 
+
+/* Phase 4: Global small-text readability improvement */
+.text-muted,
+.text-secondary,
+.text-body-secondary,
+.text-white-50,
+.text-dim,
+small,
+.small {
+    color: #FFFFFF !important;
+}
+
+
+/* Global readability: make muted and small text white */
+.text-muted,
+.text-secondary,
+.text-body-secondary,
+.text-white-50,
+.text-dim,
+small,
+.small {
+    color: #FFFFFF !important;
+}
+
