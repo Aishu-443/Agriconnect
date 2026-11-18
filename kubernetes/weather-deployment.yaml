@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: agriconnect-weather
-          image: agriconnect-weather:latest
-          imagePullPolicy: IfNotPresent
+          image: aishvitha/agriconnect-weather:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
               name: http

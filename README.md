@@ -1,355 +1,712 @@
-# 🌱 AgriConnect: Smart Agriculture & Farmer Support Platform
+# AgriConnect â€” Smart Agriculture Platform
 
-AgriConnect is an enterprise-grade smart agriculture platform designed to empower farmers, agricultural cooperatives, and agronomy experts. It delivers intelligent farm management, crop health monitoring, real-time weather analytics, marketplace connectivity, and government scheme advisories.
+AgriConnect is a smart agriculture platform that combines a web frontend, Spring Boot backend, PostgreSQL database, and Python-based weather service.
 
-Built with a modern microservices architecture and backed by an industry-standard DevOps delivery pipeline, AgriConnect integrates a Spring Boot backend, a Python Flask weather microservice, PostgreSQL persistent storage, Docker containerization, Kubernetes orchestration, and automated Jenkins CI/CD pipelines.
-
----
-
-## 📑 Table of Contents
-1. [Project Overview](#-project-overview)
-2. [Tech Stack](#-tech-stack)
-3. [Prerequisites](#-prerequisites)
-4. [Local Development Setup](#-local-development-setup)
-5. [Default Admin Credentials](#-default-admin-credentials)
-6. [Running Tests](#-running-tests)
-7. [Docker & Containerized Setup](#-docker--containerized-setup)
-8. [Kubernetes Deployment](#-kubernetes-deployment)
-9. [Jenkins CI/CD Pipelines](#-jenkins-cicd-pipelines)
-10. [API Endpoints Reference](#-api-endpoints-reference)
-11. [DevOps Course Modules Coverage](#-devops-course-modules-coverage)
-12. [Project Directory Structure](#-project-directory-structure)
+The project demonstrates containerization, CI/CD automation, Docker Hub image publishing, and Kubernetes deployment.
 
 ---
 
-## 🌿 Project Overview
+## 1. Project Overview
 
-AgriConnect bridges the gap between digital technology and practical agriculture. Key capabilities include:
-- **Real-Time Weather & Forecasting**: Integration with the open Open-Meteo API to provide hyper-local weather alerts, wind speed, precipitation, and 7-day agricultural forecasts without requiring third-party API keys.
-- **Crop & Field Advisory**: Algorithmic recommendations for irrigation schedules, fertilizer usage, and harvest timing based on microclimate variables.
-- **Enterprise Security**: JWT-based stateless authentication, role-based access control (Admin, Expert, Farmer), and encrypted credential management.
-- **Resilient Cloud Architecture**: Fully containerized and Kubernetes-ready, supporting automated self-healing, rolling deployments, and horizontal pod scaling.
+AgriConnect provides a platform for agricultural information and services through a web-based interface.
 
----
+### Main Components
 
-## 🛠 Tech Stack
+- **Frontend:** HTML, CSS, JavaScript, and Nginx.
+- **Backend:** Java Spring Boot REST API.
+- **Database:** PostgreSQL.
+- **Weather Service:** Python Flask application.
+- **Containerization:** Docker.
+- **Image Registry:** Docker Hub.
+- **CI/CD:** Jenkins.
+- **Orchestration:** Kubernetes.
 
-| Domain | Technology | Version | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Backend Core** | Java / Spring Boot | Java 21, Spring Boot 3.x | Primary business logic, REST APIs, JPA/Hibernate ORM |
-| **Weather Microservice** | Python / Flask | Python 3.11+, Flask 3.0.3 | Weather data ingestion, Open-Meteo translation, CORS handling |
-| **Database** | PostgreSQL | 16.x | Relational database for users, crops, sensor logs, and orders |
-| **Build & Dependency** | Apache Maven / pip | Maven 3.9+, pip 24+ | Java compilation, packaging, and Python dependency management |
-| **Containerization** | Docker & Docker Compose | Docker Engine 24+, Compose v2 | Multi-container microservice packaging and local orchestration |
-| **Container Orchestration** | Kubernetes | 1.28+ (Minikube / Kind / K8s) | Declarative deployments, ConfigMaps, Secrets, PVC, NodePort services |
-| **CI/CD Automation** | Jenkins | 2.400+ | Declarative and Scripted automated build, test, package, and deploy pipelines |
-| **Testing** | JUnit 5 & pytest | JUnit 5, pytest 8.2+ | Unit, integration, and API contract test automation |
-| **Demo & Legacy Integration** | Apache Tomcat | 9.x / 10.x | WAR packaging demonstration and Java Servlet 4.0 mapping |
+### Deployment Architecture
 
----
-
-## 📋 Prerequisites
-
-Before setting up AgriConnect locally, verify that the following runtime environments and tools are installed:
-
-- **Java Development Kit (JDK)**: OpenJDK 21 or Eclipse Temurin 21 (`java -version`)
-- **Apache Maven**: Version 3.9.0 or higher (`mvn -version`)
-- **Python**: Version 3.11.x or higher (`python --version`)
-- **PostgreSQL**: Version 16.x server (`psql --version`)
-- **Docker**: Docker Engine 24.0+ and Docker Compose v2 (`docker version`, `docker-compose version`)
-- **Kubernetes CLI**: `kubectl` connected to a local cluster (Minikube, Kind, Docker Desktop, or K3s)
-- **Jenkins**: Local or remote Jenkins server with Git, Docker, Pipeline, and Kubernetes CLI plugins installed
-
----
-
-## 💻 Local Development Setup
-
-### 1. PostgreSQL Database Configuration
-
-Launch PostgreSQL and execute the following SQL commands to create the dedicated database user and schema:
-
-```sql
--- Connect as postgres superuser
-psql -U postgres
-
--- Create dedicated database user
-CREATE USER agriconnect_user WITH PASSWORD 'AgriConnect@2024';
-
--- Create database owned by agriconnect_user
-CREATE DATABASE agriconnect_db OWNER agriconnect_user;
-
--- Grant required permissions
-GRANT ALL PRIVILEGES ON DATABASE agriconnect_db TO agriconnect_user;
+```text
+                 Developer
+                     |
+                     v
+                  GitHub
+                     |
+                     v
+                  Jenkins
+                     |
+             Build and Test
+                     |
+                     v
+               Docker Images
+                     |
+                     v
+                 Docker Hub
+                     |
+                     v
+                 Kubernetes
+                     |
+        +------------+------------+
+        |            |            |
+        v            v            v
+     Frontend     Backend    Weather Service
+        |            |            |
+        +------------+------------+
+                     |
+                     v
+                 PostgreSQL
 ```
 
-### 2. Run the Spring Boot Backend
+---
 
-```bash
+## 2. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Web Server | Nginx |
+| Backend | Java, Spring Boot |
+| Database | PostgreSQL 16 |
+| Weather Service | Python, Flask |
+| Backend Testing | JUnit 5, Maven |
+| Weather Testing | pytest |
+| Containerization | Docker |
+| Image Registry | Docker Hub |
+| CI/CD | Jenkins |
+| Orchestration | Kubernetes |
+| Version Control | Git, GitHub |
+
+---
+
+## 3. Prerequisites
+
+Install the following tools before deploying AgriConnect.
+
+- Git
+- Docker Desktop
+- Docker Hub account
+- Java Development Kit compatible with the backend
+- Apache Maven
+- Python 3
+- Jenkins
+- kubectl
+- A Kubernetes cluster
+
+For local Kubernetes deployment, Docker Desktop Kubernetes can be used.
+
+For deployment on another computer or cloud environment, configure an appropriate Kubernetes cluster and its storage provisioner.
+
+---
+
+## 4. Get the Project
+
+Clone the GitHub repository:
+
+```powershell
+git clone https://github.com/Aishu-443/Agriconnect.git
+```
+
+Navigate into the project:
+
+```powershell
+cd Agriconnect
+```
+
+Check the project files:
+
+```powershell
+Get-ChildItem
+```
+
+---
+
+## 5. Local Development Setup
+
+### Backend
+
+Navigate to the backend directory:
+
+```powershell
 cd agriconnect-backend
-mvn clean spring-boot:run
 ```
-The backend server will launch on `http://localhost:8080`.
 
-### 3. Run the Python Weather Microservice
+Build and test the Spring Boot application:
 
-```bash
+```powershell
+mvn clean verify
+```
+
+Return to the project root:
+
+```powershell
+cd ..
+```
+
+### Weather Service
+
+Navigate to the weather service:
+
+```powershell
 cd weather-service
-
-# Create and activate virtual environment (Linux/macOS)
-python3 -m venv venv
-source venv/bin/activate
-
-# For Windows PowerShell
-# python -m venv venv
-# .\venv\Scripts\Activate.ps1
-
-# Install required dependencies
-pip install -r requirements.txt
-
-# Start the Flask microservice
-python app.py
 ```
-The weather service will launch on `http://localhost:5000`.
 
-### 4. Open the Web Frontend
+Create a Python virtual environment:
 
-Simply open `frontend/index.html` in any modern web browser or serve it with a lightweight static server:
-```bash
-# Optional static server
+```powershell
+python -m venv venv
+```
+
+Activate it:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Run the tests:
+
+```powershell
+pytest -v
+```
+
+Return to the project root:
+
+```powershell
+deactivate
+cd ..
+```
+
+### Frontend
+
+The frontend is served using Nginx in the containerized deployment.
+
+For a basic static preview, run:
+
+```powershell
 npx serve frontend
-# or
+```
+
+Alternatively:
+
+```powershell
 python -m http.server 3000 --directory frontend
 ```
 
 ---
 
-## 🔐 Default Admin Credentials
+## 6. Admin Account Configuration
 
-Upon initial database migration and startup, the platform provides default administrative access:
+Administrator credentials should be configured securely for each deployment.
 
-- **Email**: `admin@agriconnect.com`
-- **Password**: `Admin@123`
-- **Role**: `ROLE_ADMIN`
-
-> [!NOTE]
-> For production environments, remember to immediately rotate the administrative password and update `JWT_SECRET` in `kubernetes/secrets.yaml` or your secrets store.
+- Do not publish default passwords in the repository.
+- Configure administrator access using the application's supported account setup process.
+- Change any default credentials before exposing the application to other users.
+- Never commit passwords, access tokens, or signing secrets to GitHub.
 
 ---
 
-## 🧪 Running Tests
+## 7. Running Tests
 
-AgriConnect includes automated unit and integration tests across both microservices.
+AgriConnect includes automated tests for its backend and weather service.
 
-### Backend Tests (Spring Boot / JUnit 5)
-```bash
+### Backend Tests
+
+```powershell
 cd agriconnect-backend
 mvn clean test
 ```
-Test results and Surefire XML reports will be generated in `agriconnect-backend/target/surefire-reports/`.
 
-### Weather Service Tests (Python / pytest)
-```bash
+Test reports are generated under:
+
+```text
+agriconnect-backend/target/surefire-reports/
+```
+
+### Weather Service Tests
+
+```powershell
 cd weather-service
 pytest -v
 ```
-To generate JUnit-compatible test reports for Jenkins:
-```bash
+
+To generate a Jenkins-compatible test report:
+
+```powershell
 pytest -v --junitxml=test-results.xml
 ```
 
 ---
 
-## 🐳 Docker & Containerized Setup
+## 8. Docker and Docker Hub
 
-Run the entire AgriConnect platform (Database, Spring Boot Backend, and Python Weather Microservice) with a single command:
+AgriConnect uses Docker to package its application components into portable container images.
 
-```bash
-# Build and start all services in the background
-docker-compose up --build -d
+### Docker Hub Repositories
 
-# Check running containers
-docker-compose ps
+The following public image repositories are used:
 
-# View unified application logs
-docker-compose logs -f
+| Component | Docker Hub Image |
+|---|---|
+| Backend | `aishvitha/agriconnect-backend` |
+| Frontend | `aishvitha/agriconnect-frontend` |
+| Weather | `aishvitha/agriconnect-weather` |
 
-# Stop and clean up containers and volumes
-docker-compose down -v
+### Pull Images from Docker Hub
+
+```powershell
+docker pull aishvitha/agriconnect-backend:latest
+docker pull aishvitha/agriconnect-frontend:latest
+docker pull aishvitha/agriconnect-weather:latest
 ```
 
-### Container Endpoints:
-- **PostgreSQL**: `localhost:5432`
-- **Spring Boot Backend**: `http://localhost:8080`
-- **Weather Microservice**: `http://localhost:5000`
+### Build Images Manually
+
+Run these commands from the project root:
+
+```powershell
+docker build -t aishvitha/agriconnect-backend:latest ./agriconnect-backend
+docker build -t aishvitha/agriconnect-frontend:latest ./frontend
+docker build -t aishvitha/agriconnect-weather:latest ./weather-service
+```
+
+### Push Images to Docker Hub
+
+Authenticate using Docker:
+
+```powershell
+docker login
+```
+
+Push the images:
+
+```powershell
+docker push aishvitha/agriconnect-backend:latest
+docker push aishvitha/agriconnect-frontend:latest
+docker push aishvitha/agriconnect-weather:latest
+```
+
+Use a Docker Hub access token for authentication where required. Never store the token in this README or commit it to GitHub.
 
 ---
 
-## ☸️ Kubernetes Deployment
+## 9. Docker Compose Deployment
 
-AgriConnect provides declarative, production-grade Kubernetes manifests located in `kubernetes/`.
+Docker Compose can run the application services together on a machine with Docker installed.
 
-### 1. Deploy All Resources
-```bash
-kubectl apply -f kubernetes/
+### Step 1: Configure Environment Variables
+
+Create a local environment file:
+
+```powershell
+Copy-Item .env.example .env
 ```
 
-### 2. Verify Deployments & Pods
-```bash
-# Check deployment status
+Open it:
+
+```powershell
+notepad .env
+```
+
+Replace the placeholder values with strong, private credentials.
+
+The `.env` file is excluded from Git.
+
+### Step 2: Validate Docker Compose Configuration
+
+```powershell
+docker compose --env-file .env config --quiet
+```
+
+### Step 3: Build and Start Services
+
+```powershell
+docker compose up --build -d
+```
+
+### Step 4: Verify Containers
+
+```powershell
+docker compose ps
+```
+
+### Step 5: View Logs
+
+```powershell
+docker compose logs -f
+```
+
+### Step 6: Stop Services
+
+```powershell
+docker compose down
+```
+
+To remove the database volume as well, use:
+
+```powershell
+docker compose down -v
+```
+
+**Warning:** Removing the volume deletes the persisted database data. Do not use this command if you need to retain your database.
+
+### Docker Compose Endpoints
+
+| Component | Local Address |
+|---|---|
+| Frontend | `http://localhost:8081` |
+| Backend | `http://localhost:8083` |
+| Weather Service | `http://localhost:5000` |
+| PostgreSQL | `localhost:5432` |
+
+---
+
+## 10. Kubernetes Deployment
+
+AgriConnect includes Kubernetes manifests in the `kubernetes/` directory.
+
+The deployment script configures the required resources, checks for credentials, deploys PostgreSQL, and then deploys the application components.
+
+### Prerequisites
+
+Verify that Kubernetes is running:
+
+```powershell
+kubectl cluster-info
+```
+
+Check the active context:
+
+```powershell
+kubectl config current-context
+```
+
+Check the available nodes:
+
+```powershell
+kubectl get nodes
+```
+
+### Deploy AgriConnect
+
+From the project root, run:
+
+```powershell
+.\deploy.ps1
+```
+
+The script checks for an existing Kubernetes Secret. If one does not exist, it prompts for the database password and JWT secret.
+
+Do not share these values or commit them to GitHub.
+
+### Verify Deployments
+
+```powershell
 kubectl get deployments
-
-# Check pods
-kubectl get pods -l 'app in (postgres, agriconnect-backend, agriconnect-weather)'
-
-# Check services
-kubectl get svc
 ```
 
-### 3. Service Access (NodePort)
-- **Backend Service**: `http://<node-ip>:30080` (or `http://localhost:30080` on Docker Desktop / Minikube tunnel)
-- **Weather Service**: `http://<node-ip>:30500` (or `http://localhost:30500` on Docker Desktop / Minikube tunnel)
-
-### 4. Verification Commands
-```bash
-# Verify rollout status
-kubectl rollout status deployment/postgres --timeout=120s
-kubectl rollout status deployment/agriconnect-backend --timeout=180s
-kubectl rollout status deployment/agriconnect-weather --timeout=120s
+```powershell
+kubectl get pods
 ```
 
----
-
-## 🔄 Jenkins CI/CD Pipelines
-
-AgriConnect includes both Declarative and Scripted Jenkins pipeline definitions under `jenkins/`.
-
-### Declarative Pipeline (`jenkins/Jenkinsfile`)
-Automates the complete continuous integration and continuous deployment lifecycle:
-1. **Checkout**: Pulls latest revision from Git repository.
-2. **Build Backend**: Builds Spring Boot executable JAR (`mvn clean package -DskipTests`).
-3. **Test Backend**: Runs Maven JUnit test suite and publishes test reports.
-4. **Build Flask**: Provisions Python virtualenv, installs requirements, and runs `pytest`.
-5. **Docker Build Backend**: Containers packaged with Temurin 21 JRE runtime.
-6. **Docker Build Weather**: Packages lightweight Python 3.11 slim image.
-7. **Deploy to Kubernetes**: Applies manifests using `kubectl apply -f kubernetes/`.
-8. **Verify Deployment**: Confirms zero-downtime rollout completion.
-9. **Post**: Automated workspace cleanup and build notifications.
-
-### Scripted Pipeline (`jenkins/scripted-pipeline.groovy`)
-Implements the same stages within a Groovy-scripted `node { try { ... } catch { ... } finally { ... } }` construct, featuring parallel test execution and comprehensive error handling.
-
----
-
-## 📡 API Endpoints Reference
-
-### 🌤 Weather Microservice (`http://localhost:5000`)
-| Method | Endpoint | Query Parameters | Description | Status Codes |
-| :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/health` | None | Service liveness & readiness health check | 200 |
-| `GET` | `/weather/current` | `latitude` (float), `longitude` (float) | Current temperature, humidity, wind speed, weather code and description | 200, 400, 503 |
-| `GET` | `/weather/forecast` | `latitude` (float), `longitude` (float) | 7-day daily forecast (temps, precipitation, wind speed, weather codes) | 200, 400, 503 |
-
-#### Sample Weather Current Response:
-```json
-{
-  "location_lat": 17.69,
-  "location_lon": 83.22,
-  "latitude": 17.69,
-  "longitude": 83.22,
-  "temperature": 29.5,
-  "temperature_2m": 29.5,
-  "humidity": 72,
-  "relative_humidity_2m": 72,
-  "precipitation": 0.0,
-  "wind_speed": 14.2,
-  "wind_speed_10m": 14.2,
-  "weather_code": 1,
-  "weather_description": "Mainly clear",
-  "source": "Open-Meteo",
-  "time": "2026-11-15T12:00"
-}
+```powershell
+kubectl get services
 ```
 
-### ☕ Spring Boot Backend (`http://localhost:8080`)
-| Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/actuator/health` | Spring Boot Actuator health status | No |
-| `POST` | `/api/auth/register` | Register new user account | No |
-| `POST` | `/api/auth/login` | Authenticate user & receive JWT token | No |
-| `GET` | `/api/users/profile` | Retrieve authenticated user profile | Yes (Bearer JWT) |
-| `GET` | `/api/crops` | List crop varieties & planting guides | Yes (Bearer JWT) |
-| `POST` | `/api/crops` | Add new crop record | Yes (Admin/Expert) |
-| `GET` | `/api/advisories` | Fetch weather-based agricultural advisories | Yes (Bearer JWT) |
-| `GET` | `/api/marketplace/items` | List available agricultural produce & supplies | Yes (Bearer JWT) |
+### Verify Rollouts
 
----
+```powershell
+kubectl rollout status deployment/postgres --timeout=240s
+kubectl rollout status deployment/agriconnect-backend --timeout=240s
+kubectl rollout status deployment/agriconnect-weather --timeout=240s
+kubectl rollout status deployment/agriconnect-frontend --timeout=240s
+```
 
-## 🎓 DevOps Course Modules Coverage
+### Access the Frontend
 
-This repository serves as a practical implementation for DevOps syllabus Modules 1 through 9:
+Run:
 
-| Module | Topic | AgriConnect Implementation Component |
-| :--- | :--- | :--- |
-| **Module 1** | DevOps Fundamentals & Linux Administration | Multi-container microservices architecture, bash execution, file permissions, environment variables |
-| **Module 2** | Git & GitHub Version Control | Complete `.gitignore`, structured branching, commit history, and `sample.txt` demonstration file |
-| **Module 3** | Build Automation with Maven | Spring Boot Maven project, `demo/pom.xml`, dependency scopes, surefire testing, JAR/WAR packaging |
-| **Module 4** | Web Servers & Application Deployment | Apache Tomcat deployment demo (`demo/HelloServlet.java`, `web.xml`, `index.html`), Flask demo (`demo/hello.py`) |
-| **Module 5** | Continuous Integration with Jenkins | Declarative Pipeline (`jenkins/Jenkinsfile`), Scripted Pipeline (`jenkins/scripted-pipeline.groovy`), test reporting |
-| **Module 6** | Containerization with Docker | `agriconnect-backend/Dockerfile`, `weather-service/Dockerfile`, multi-stage builds, root `docker-compose.yml` |
-| **Module 7** | Container Orchestration with Kubernetes | Manifests in `kubernetes/`: Pods, Deployments, Services (ClusterIP, NodePort), ConfigMaps, Secrets, PVC |
-| **Module 8** | Microservices Architecture & Python Integration | Python Flask microservice (`weather-service/app.py`), Open-Meteo REST client, CORS, pytest mock testing |
-| **Module 9** | Production CI/CD & Cloud Delivery | Full automated pipeline: Checkout ➔ Build ➔ Test ➔ Containerize ➔ K8s Rollout ➔ Health Verification |
+```powershell
+kubectl port-forward service/frontend-service 8082:80
+```
 
----
-
-## 🗂 Project Directory Structure
+Open the following address in a browser:
 
 ```text
-fearless-tesla/
-├── .gitignore                               # Comprehensive Git ignore rules
-├── README.md                                # Platform documentation and runbook
-├── sample.txt                               # DevOps Module 2 Git demo sample file
-├── docker-compose.yml                       # Multi-container orchestration (Postgres, Backend, Weather)
-│
-├── agriconnect-backend/                     # Spring Boot core backend microservice
-│   └── Dockerfile                           # Eclipse Temurin 21 JRE Docker image definition
-│
-├── weather-service/                         # Python Flask weather microservice
-│   ├── Dockerfile                           # Python 3.11-slim container image definition
-│   ├── app.py                               # Flask 3.x application with Open-Meteo integration
-│   ├── requirements.txt                     # Python production & testing dependencies
-│   └── test_app.py                          # Pytest suite with mocked HTTP endpoints
-│
-├── kubernetes/                              # Kubernetes production manifests
-│   ├── configmap.yaml                       # Application configuration variables
-│   ├── secrets.yaml                         # Encrypted base64 database & JWT credentials
-│   ├── postgres-pvc.yaml                    # 5Gi PersistentVolumeClaim for PostgreSQL data
-│   ├── postgres-deployment.yaml             # PostgreSQL database deployment
-│   ├── postgres-service.yaml                # ClusterIP service on port 5432
-│   ├── backend-deployment.yaml              # Spring Boot 2-replica deployment with health probes
-│   ├── backend-service.yaml                 # NodePort service exposed on port 30080
-│   ├── weather-deployment.yaml              # Flask weather deployment with liveness probes
-│   └── weather-service.yaml                 # NodePort service exposed on port 30500
-│
-├── jenkins/                                 # CI/CD automation pipelines
-│   ├── Jenkinsfile                          # Declarative Jenkins pipeline (Checkout -> Build -> Test -> Docker -> K8s)
-│   └── scripted-pipeline.groovy             # Scripted Groovy pipeline with try-catch & parallel testing
-│
-└── demo/                                    # DevOps Module 3 & 4 demonstration modules
-    ├── pom.xml                              # Maven WAR project configuration (javax.servlet-api)
-    ├── hello.py                             # Lightweight standalone Flask demo
-    └── src/
-        └── main/
-            ├── java/
-            │   └── com/
-            │       └── demo/
-            │           └── HelloServlet.java # HttpServlet implementation responding to /hello
-            └── webapp/
-                ├── index.html               # Welcome page deployed on Tomcat
-                └── WEB-INF/
-                    └── web.xml              # Servlet mapping descriptor
+http://localhost:8082
+```
+
+Keep the PowerShell window running while accessing the application.
+
+The frontend Nginx server routes API requests to the backend and weather service inside Kubernetes.
+
+### Kubernetes Services
+
+| Service | Port |
+|---|---|
+| Frontend | 80 |
+| Backend | 8080 |
+| Weather | 5000 |
+| PostgreSQL | 5432 |
+
+The Kubernetes service configuration uses internal service discovery for communication between application components.
+
+---
+
+## 11. Jenkins CI/CD Pipeline
+
+AgriConnect uses Jenkins to automate the build, test, image publishing, and Kubernetes deployment process.
+
+### Pipeline Configuration
+
+The Jenkins pipeline is defined in:
+
+```text
+jenkins/Jenkinsfile
+```
+
+Configure a Jenkins Pipeline job with:
+
+- **Repository:** `https://github.com/Aishu-443/Agriconnect.git`
+- **Branch:** `main`
+- **Script Path:** `jenkins/Jenkinsfile`
+- **Pipeline Definition:** Pipeline script from SCM
+- **SCM:** Git
+
+### Jenkins Credentials
+
+Configure Docker Hub authentication in Jenkins Credentials.
+
+The credential ID expected by the pipeline is:
+
+```text
+dockerhub-creds
+```
+
+Use a Docker Hub username and access token with the required permissions.
+
+Never place the access token directly inside the Jenkinsfile.
+
+### Pipeline Stages
+
+The pipeline performs these stages:
+
+1. **Checkout:** Retrieves the source code from GitHub.
+2. **Build and Test Backend:** Builds and tests the Spring Boot application using Maven.
+3. **Test Weather Service:** Installs Python dependencies and executes pytest.
+4. **Build Docker Images:** Builds the backend, frontend, and weather service images.
+5. **Push Docker Images:** Publishes versioned images and the latest tags to Docker Hub.
+6. **Deploy to Kubernetes:** Updates the application deployments with the newly published image versions.
+7. **Verify Deployment:** Checks Kubernetes rollout status and application deployments.
+
+### Build Verification
+
+After running the Jenkins job, inspect:
+
+- Console Output
+- Build status
+- Test reports
+- Docker Hub repositories
+- Kubernetes deployment status
+
+A successful pipeline should complete with all required stages successful and the application deployments ready.
+
+### Environment Configuration
+
+The current Jenkinsfile contains Windows-specific executable paths and a local kubeconfig path.
+
+When using another machine, update the executable paths, Jenkins credentials, and Kubernetes access configuration to match that environment.
+
+---
+
+## 12. API Endpoints Reference
+
+The frontend uses Nginx reverse proxying so that browser requests can use the same origin as the frontend.
+
+Example endpoints:
+
+| Endpoint | Purpose |
+|---|---|
+| `/api/announcements` | Retrieves announcements |
+| `/weather/current` | Retrieves current weather information |
+
+Example weather request:
+
+```text
+/weather/current?latitude=17.69&longitude=83.22
+```
+
+For local Kubernetes access, these endpoints can be tested through:
+
+```text
+http://localhost:8082/api/announcements
+```
+
+```text
+http://localhost:8082/weather/current?latitude=17.69&longitude=83.22
 ```
 
 ---
 
-*AgriConnect DevOps Engineering Team © 2026. Built for sustainable smart agriculture.*
+## 13. Project Directory Structure
+
+```text
+Agriconnect/
+|
+|-- agriconnect-backend/
+|   |-- src/
+|   |-- pom.xml
+|   |-- Dockerfile
+|
+|-- frontend/
+|   |-- index.html
+|   |-- css/
+|   |-- js/
+|   |-- Dockerfile
+|   |-- nginx.conf
+|
+|-- weather-service/
+|   |-- app.py
+|   |-- requirements.txt
+|   |-- Dockerfile
+|   |-- test_app.py
+|
+|-- jenkins/
+|   |-- Jenkinsfile
+|
+|-- kubernetes/
+|   |-- backend-deployment.yaml
+|   |-- backend-service.yaml
+|   |-- configmap.yaml
+|   |-- frontend-deployment.yaml
+|   |-- frontend-service.yaml
+|   |-- postgres-deployment.yaml
+|   |-- postgres-pvc.yaml
+|   |-- postgres-service.yaml
+|   |-- weather-deployment.yaml
+|   |-- weather-service.yaml
+|
+|-- .env.example
+|-- .gitignore
+|-- docker-compose.yml
+|-- deploy.ps1
+|-- README.md
+```
+
+**Note:** .env is a local sensitive configuration file and must not be committed. Kubernetes credentials are created securely by deploy.ps1 or configured separately for your cluster.
+
+---
+
+## 14. Security Notes
+
+Follow these practices when deploying AgriConnect:
+
+- Keep passwords and signing secrets out of source control.
+- Keep `.env` and Kubernetes Secret files excluded from Git.
+- Use Jenkins Credentials for Docker Hub authentication.
+- Use strong database passwords and JWT signing secrets.
+- Avoid publishing administrator passwords in documentation.
+- Use HTTPS and appropriate access controls when exposing the application publicly.
+- Restrict access to the Kubernetes cluster and its credentials.
+
+Kubernetes Secret values are base64-encoded by default. Base64 encoding is not encryption. Configure appropriate cluster access controls and encryption at rest for production environments.
+
+---
+
+## 15. Troubleshooting
+
+### Docker is not running
+
+Start Docker Desktop and verify:
+
+```powershell
+docker version
+```
+
+### Kubernetes cluster is unavailable
+
+Check:
+
+```powershell
+kubectl cluster-info
+kubectl get nodes
+```
+
+### Pods are not starting
+
+Inspect:
+
+```powershell
+kubectl get pods
+kubectl describe pods
+```
+
+View application logs:
+
+```powershell
+kubectl logs deployment/agriconnect-backend
+```
+
+### Deployment rollout fails
+
+Check:
+
+```powershell
+kubectl rollout status deployment/agriconnect-backend
+kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
+### Frontend cannot access backend
+
+Check the Kubernetes services:
+
+```powershell
+kubectl get services
+```
+
+Check frontend Nginx configuration and the backend and weather service endpoints.
+
+### Jenkins cannot access Docker
+
+Verify Docker Desktop is running and that the executable paths configured in the Jenkinsfile are correct for the machine running Jenkins.
+
+---
+
+## 16. DevOps Concepts Demonstrated
+
+This project demonstrates:
+
+- Version control using Git and GitHub.
+- Automated builds and testing.
+- CI/CD pipeline implementation using Jenkins.
+- Containerization using Docker.
+- Docker image publishing using Docker Hub.
+- Multi-service application deployment.
+- Kubernetes Deployments and Services.
+- Persistent storage using PersistentVolumeClaims.
+- Application configuration using ConfigMaps.
+- Credential management using Kubernetes Secrets and Jenkins Credentials.
+- Application health checks and rollout verification.
+- Container networking and service discovery.
+
+---
+
+## Deployment Notes
+
+AgriConnect supports multiple deployment approaches:
+
+| Deployment Method | Purpose |
+|---|---|
+| Local development | Develop and test individual components |
+| Docker Compose | Run the application services together |
+| Kubernetes | Deploy and manage containerized services |
+| Jenkins CI/CD | Automate testing, image publishing, and deployment |
+
+**Important:** Docker Hub stores container images; it does not independently host the running application. Anyone deploying this project on another machine needs Docker Compose or a Kubernetes environment, along with the required configuration and credentials.
+
+---
+
+**AgriConnect DevOps Engineering Team (C) 2026**
+
+Built for sustainable smart agriculture.
