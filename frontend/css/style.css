@@ -1162,3 +1162,12 @@ p {
     padding: 2rem 1.5rem;
   }
 }
+
+/* Phase 4: Improve small-text readability on Market page */
+.market-page .text-muted,
+.market-page .small,
+.market-page small,
+.market-page #tableCountText {
+    color: #FFFFFF !important;
+}
+
