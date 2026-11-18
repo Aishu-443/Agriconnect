@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -13,9 +14,11 @@ pipeline {
         PYTHON_EXE = 'C:\\Program Files\\Python314\\python.exe'
         KUBECONFIG = 'C:\\Users\\bomma\\.kube\\config'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
+        DOCKERHUB_USERNAME = 'aishvitha'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -62,23 +65,49 @@ pipeline {
             }
         }
 
+        
+        stage('Push Docker Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DH_USER',
+                    passwordVariable: 'DH_PASSWORD'
+                )]) {
+                    bat '''
+                        powershell -NoProfile -NonInteractive -Command "$env:DH_PASSWORD | & $env:DOCKER_EXE login -u $env:DH_USER --password-stdin"
+
+                        "%DOCKER_EXE%" tag agriconnect-backend:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-backend:%IMAGE_TAG%
+                        "%DOCKER_EXE%" tag agriconnect-frontend:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-frontend:%IMAGE_TAG%
+                        "%DOCKER_EXE%" tag agriconnect-weather:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-weather:%IMAGE_TAG%
+
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-backend:%IMAGE_TAG%
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-frontend:%IMAGE_TAG%
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-weather:%IMAGE_TAG%
+
+                        "%DOCKER_EXE%" tag agriconnect-backend:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-backend:latest
+                        "%DOCKER_EXE%" tag agriconnect-frontend:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-frontend:latest
+                        "%DOCKER_EXE%" tag agriconnect-weather:%IMAGE_TAG% %DOCKERHUB_USERNAME%/agriconnect-weather:latest
+
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-backend:latest
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-frontend:latest
+                        "%DOCKER_EXE%" push %DOCKERHUB_USERNAME%/agriconnect-weather:latest
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 bat '"%KUBECTL_EXE%" get secret agriconnect-secrets'
                 bat '"%KUBECTL_EXE%" apply -f kubernetes\\configmap.yaml'
 
                 bat '"%KUBECTL_EXE%" apply -f kubernetes\\backend-service.yaml'
-                bat '"%KUBECTL_EXE%" apply -f kubernetes\\backend-deployment.yaml'
-
                 bat '"%KUBECTL_EXE%" apply -f kubernetes\\weather-service.yaml'
-                bat '"%KUBECTL_EXE%" apply -f kubernetes\\weather-deployment.yaml'
-
                 bat '"%KUBECTL_EXE%" apply -f kubernetes\\frontend-service.yaml'
-                bat '"%KUBECTL_EXE%" apply -f kubernetes\\frontend-deployment.yaml'
 
-                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-backend agriconnect-backend=agriconnect-backend:%IMAGE_TAG%'
-                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-weather agriconnect-weather=agriconnect-weather:%IMAGE_TAG%'
-                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-frontend frontend=agriconnect-frontend:%IMAGE_TAG%'
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-backend agriconnect-backend=%DOCKERHUB_USERNAME%/agriconnect-backend:%IMAGE_TAG%'
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-weather agriconnect-weather=%DOCKERHUB_USERNAME%/agriconnect-weather:%IMAGE_TAG%'
+                bat '"%KUBECTL_EXE%" set image deployment/agriconnect-frontend frontend=%DOCKERHUB_USERNAME%/agriconnect-frontend:%IMAGE_TAG%'
             }
         }
 
